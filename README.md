@@ -22,10 +22,14 @@ son tableau de bord.
 
 ## Où en est le projet
 
-Étape 1 sur 4 (voir la feuille de route ci-dessous) : **collecte, stockage,
-journalisation, tests, démonstration locale**. Le module d'analyse, le
-simulateur, le gel de configuration et le tableau de bord viennent après,
-seulement une fois plusieurs semaines de données réunies.
+Étape 2 sur 4 (voir la feuille de route en bas de page) : **collecte
+automatique via GitHub Actions**, en plus de l'étape 1 (collecte locale,
+stockage, tests) déjà en place. Le module d'analyse, le simulateur, le gel
+de configuration et le tableau de bord viennent après, seulement une fois
+plusieurs semaines de données réunies.
+
+Pour mettre en place la collecte automatique toi-même :
+[docs/guide_github_actions.md](docs/guide_github_actions.md).
 
 ## Univers suivi et biais
 
@@ -78,6 +82,23 @@ réécrits ni élagués :
 La commande `build-db` charge tout ça dans une base SQLite locale
 (`data/smc.sqlite3`), reconstruite à chaque exécution — les CSV restent la
 seule source de vérité versionnée.
+
+Le dépôt Git a deux branches : `main` (code, config, tests) et `data` (les
+CSV ci-dessus, à sa racine — pas de sous-dossier `data/` imbriqué sur cette
+branche). Voir [docs/guide_github_actions.md](docs/guide_github_actions.md)
+pour la mise en place.
+
+## Cache brut sur GitHub Actions : une limite assumée
+
+`data/cache/` archive le JSON brut de chaque appel HTTP, utile pour
+déboguer en local. Sur GitHub Actions, chaque run tourne sur une machine
+neuve et éphémère : ce cache ne peut survivre d'un run à l'autre que s'il
+est commité sur la branche `data` — ce qui représenterait plusieurs
+centaines de Mo à quelques Go par mois sur un dépôt public, pour une valeur
+d'usage limitée puisque les CSV (`raw/`) restent déjà la source de vérité
+complète. **Décision : le cache n'est jamais versionné** (`.gitignore` sur la
+branche `data`). Il reste local et utile quand tu lances `collect`
+toi-même, et est simplement recréé (et perdu) à chaque run automatique.
 
 ## Utilisation
 
@@ -145,8 +166,10 @@ Telegram, choix des seuils d'analyse à la place de l'utilisateur.
 
 ## Prochaines étapes
 
-1. ~~Collecte, stockage, journalisation, tests, démonstration locale~~ (cette étape)
-2. Workflow GitHub Actions (collecte toutes les 5 minutes) + guide de mise en place
+1. ~~Collecte, stockage, journalisation, tests, démonstration locale~~
+2. ~~Workflow GitHub Actions (collecte toutes les 5 minutes) + guide de mise en place~~ (cette étape)
 3. Une fois plusieurs semaines de données réunies : module d'analyse,
    simulateur, gel de configuration
-4. Tableau de bord Streamlit
+4. Tableau de bord interactif (Streamlit) donnant accès à toutes ces
+   statistiques — santé du collecteur, composition de l'univers, résultats
+   avec effectifs et intervalles de confiance

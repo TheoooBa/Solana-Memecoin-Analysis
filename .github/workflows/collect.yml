@@ -1,0 +1,68 @@
+name: Collecte GeckoTerminal
+
+# Déclenchement toutes les 5 minutes (intervalle minimum réel imposé par
+# GitHub Actions) + déclenchement manuel pour tester sans attendre le cron.
+"on":
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+# Si un run précédent n'est pas terminé quand le suivant se déclenche, le
+# nouveau ATTEND (il n'est pas annulé) : deux collectes concurrentes
+# corrompraient la branche `data` (push en conflit, univers relu deux fois).
+concurrency:
+  group: gecko-collect
+  cancel-in-progress: false
+
+# Nécessaire pour que le job puisse pousser des commits sur la branche `data`
+# avec le jeton GITHUB_TOKEN par défaut.
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    # Coupe-circuit : un run bloqué ne doit pas faire attendre indéfiniment
+    # les exécutions suivantes mises en file par `concurrency`.
+    timeout-minutes: 8
+    steps:
+      - name: Checkout du code (branche par défaut)
+        uses: actions/checkout@v4
+
+      - name: Checkout de la branche de données dans data/
+        uses: actions/checkout@v4
+        with:
+          ref: data
+          path: data
+          fetch-depth: 1
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+
+      - name: Lancer une collecte (idempotente)
+        env:
+          # Optionnelle : laisser vide si aucun secret GECKOTERMINAL_API_KEY
+          # n'a été défini, la collecte fonctionne sans (voir README).
+          GECKOTERMINAL_API_KEY: ${{ secrets.GECKOTERMINAL_API_KEY }}
+        run: PYTHONPATH=src python -m smc_collector.cli collect
+
+      - name: Committer et pousser les nouvelles données
+        working-directory: data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B data
+          # cache/ n'est jamais versionné : voir README, section "Cache brut
+          # sur GitHub Actions" (croissance de dépôt disproportionnée sinon).
+          git add raw logs
+          if git diff --cached --quiet; then
+            echo "Rien de nouveau à committer."
+          else
+            git commit -m "collecte automatique $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push origin data
+          fi
