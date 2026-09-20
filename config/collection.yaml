@@ -1,0 +1,73 @@
+# Configuration opérationnelle de la collecte.
+#
+# Ce fichier ne contient AUCUN seuil d'analyse (ce qu'est un "démarrage", un "rug",
+# une taille de trade, etc.) : ces définitions vivent dans config/analysis.yaml,
+# créé à l'étape 3 (module d'analyse), avec un mécanisme de gel dédié.
+# Ici, uniquement des réglages d'ingénierie : débit, budget d'appels, échantillonnage.
+
+api:
+  # Surface API "historique" de GeckoTerminal : gratuite, sans compte, sans clé.
+  # Il existe une seconde surface (api.coingecko.com/api/v3/onchain/...) qui exige
+  # une clé "Demo" gratuite et offre des limites plus hautes. Si tu obtiens une
+  # clé Demo un jour, change base_url et adapte api_key_header en conséquence.
+  base_url: "https://api.geckoterminal.com/api/v2"
+  network: "solana"
+
+  # Nom de la variable d'environnement qui contiendrait la clé (jamais la clé elle-même ici).
+  api_key_env_var: "GECKOTERMINAL_API_KEY"
+  # En-tête utilisé si la variable ci-dessus est présente. Sans objet pour la
+  # surface v2 par défaut (elle ne demande pas de clé) ; utile seulement si tu
+  # bascules base_url vers la surface v3/onchain de CoinGecko.
+  api_key_header: "x-cg-demo-api-key"
+
+  # La documentation officielle se contredit sur le débit sans clé (10 vs 30
+  # appels/minute selon la page). Valeur volontairement conservatrice : mesurée
+  # empiriquement le 2026-09-21 (voir README, section "Débit observé").
+  calls_per_minute: 8
+
+  # Coupe-circuit dur : une exécution ne dépassera jamais ce nombre d'appels HTTP
+  # (retries compris), quelle que soit la taille de l'univers suivi.
+  max_calls_per_run: 60
+
+  request_timeout_seconds: 15
+  max_retries: 5
+  backoff_base_seconds: 2.0
+  backoff_max_seconds: 60.0
+
+univers:
+  # Nombre de pools "en tendance" considérés à chaque exécution (une page de l'API).
+  trending_pool_count: 20
+
+  # Groupe témoin : parmi les nouveaux pools observés, chacun a une probabilité
+  # fixe d'être tiré au sort et suivi, indépendamment du fait qu'il devienne
+  # tendance ou non. Nécessaire pour ne pas ne voir que des succès.
+  new_pools_sample_probability: 0.25
+  new_pools_page_count: 1
+
+  # Graine fixe : le tirage au sort d'un pool est une fonction pure et
+  # déterministe de (graine, adresse du pool), jamais d'un état séquentiel.
+  # Cela garantit la reproductibilité même si une exécution manque des pools
+  # (panne, quota) : rejouer ne change jamais qui est échantillonné.
+  sampling_seed: 42
+
+  # Durée de suivi après la première observation par NOUS (pas après l'entrée
+  # dans la liste "tendance", qui est une boîte noire de la source).
+  tracking_duration_hours: 48
+
+  # Seuil d'éligibilité pour l'ANALYSE (pas pour la collecte) : un pool doit
+  # avoir une fenêtre de suivi couverte à au moins ce ratio pour être utilisé.
+  # Ce n'est pas un jugement de définition (contrairement à analysis.yaml) mais
+  # une simple exigence de qualité de données ; ajustable sans geler quoi que ce soit.
+  min_coverage_ratio: 0.8
+
+ohlcv_backfill:
+  # Résolution utilisée pour reconstituer l'historique antérieur à la première
+  # observation d'un pool nouvellement découvert.
+  timeframe: "minute"
+  aggregate: 5
+  max_candles_per_pool: 500
+
+storage:
+  raw_dir: "data/raw"
+  cache_dir: "data/cache"
+  log_dir: "data/logs"

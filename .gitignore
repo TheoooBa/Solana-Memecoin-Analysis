@@ -1,0 +1,23 @@
+# Secrets
+.env
+
+# Données collectées et artefacts locaux (la branche `data` du dépôt distant
+# est le vrai lieu de persistance des CSV bruts, pas cette copie de travail).
+data/raw/**/*.csv
+data/cache/**/*.json
+data/logs/**/*.csv
+data/*.sqlite3
+!data/raw/.gitkeep
+!data/cache/.gitkeep
+!data/logs/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/
+venv/
+
+# macOS
+.DS_Store
