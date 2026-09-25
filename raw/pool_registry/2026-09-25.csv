@@ -1,0 +1,9 @@
+pool_address,network,dex,group,discovered_at_utc,pool_created_at,reason,sampling_probability,tracking_until_utc
+Aw7qFWEHQ6xsRpJkP6hCmvG9xpzXom8pc45j1MSA1u4H,solana,Pump.fun,random_new,2026-09-25T01:28:43.572621+00:00,2026-09-25T01:28:00Z,new_pools_sampled_p=0.25,0.25,2026-09-27T01:28:43.572621+00:00
+Er1oWDTMMeKQJ6g3GneTepbf18YpzL84wVwn2xBbZPec,solana,Pump.fun,random_new,2026-09-25T01:28:43.572621+00:00,2026-09-25T01:27:51Z,new_pools_sampled_p=0.25,0.25,2026-09-27T01:28:43.572621+00:00
+GhnQDAEiNeEekERMWZXVdhvZfTZBxAc4v7McS1w5FUxB,solana,Pump.fun,random_new,2026-09-25T01:28:43.572621+00:00,2026-09-25T01:27:48Z,new_pools_sampled_p=0.25,0.25,2026-09-27T01:28:43.572621+00:00
+5yRsvBGUqSqoEDfUspWxZdgTWsfmAMxULe5GfCzdMNmM,solana,Meteora DAMM V2,random_new,2026-09-25T01:28:43.572621+00:00,2026-09-25T01:27:41Z,new_pools_sampled_p=0.25,0.25,2026-09-27T01:28:43.572621+00:00
+Dc6wZRJA8dJo7LB7FuUy8HcLv5Mg97pEvyB2jU8E89NM,solana,Meteora DBC,random_new,2026-09-25T01:28:43.572621+00:00,2026-09-25T01:27:41Z,new_pools_sampled_p=0.25,0.25,2026-09-27T01:28:43.572621+00:00
+GgqM7bfhEarztZ4fNs9hcScM46L98UVLaP2ze65QV2w,solana,Pump.fun,random_new,2026-09-25T01:28:43.572621+00:00,2026-09-25T01:27:40Z,new_pools_sampled_p=0.25,0.25,2026-09-27T01:28:43.572621+00:00
+8Gj2nCcXq53wUZ8daFMPxsxxEwxXKyhtsUim8DabxT94,solana,Pump.fun,random_new,2026-09-25T01:28:43.572621+00:00,2026-09-25T01:27:39Z,new_pools_sampled_p=0.25,0.25,2026-09-27T01:28:43.572621+00:00
+hr9F9AybZ6uCatftMtW5KVGtgjHQXbHefTd7iGHw7Yu,solana,Pump.fun,random_new,2026-09-25T01:28:43.572621+00:00,2026-09-25T01:27:32Z,new_pools_sampled_p=0.25,0.25,2026-09-27T01:28:43.572621+00:00
