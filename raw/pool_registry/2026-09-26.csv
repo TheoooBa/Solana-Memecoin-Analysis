@@ -1,0 +1,7 @@
+pool_address,network,dex,group,discovered_at_utc,pool_created_at,reason,sampling_probability,tracking_until_utc
+3dcwhqJp6JBTJPq8ga335HWgSQVS7uQmdmeX7iGjMNpj,solana,PumpSwap,trending,2026-09-26T01:46:15.417499+00:00,2026-08-27T00:03:44Z,trending_rank_17,1.0,2026-09-28T01:46:15.417499+00:00
+364hvUrAhVcGA4a4CjRNCeTzPr3XkotZePBPtWUZTvLr,solana,PumpSwap,random_new,2026-09-26T01:46:15.417499+00:00,2026-09-26T01:44:57Z,new_pools_sampled_p=0.25,0.25,2026-09-28T01:46:15.417499+00:00
+ERXreoRwqXj4ec8NZKRfXmzKQqk4eSufzQHbHvCYBqe3,solana,Meteora DAMM V2,random_new,2026-09-26T01:46:15.417499+00:00,2026-09-26T01:44:50Z,new_pools_sampled_p=0.25,0.25,2026-09-28T01:46:15.417499+00:00
+7qjiQZ5QYxW1XZLP1U1ASdjH8KVabf6guWaupbU8ZQuH,solana,Pump.fun,random_new,2026-09-26T01:46:15.417499+00:00,2026-09-26T01:44:49Z,new_pools_sampled_p=0.25,0.25,2026-09-28T01:46:15.417499+00:00
+jyjX1ZnB5zZ3n3am5yFCnfTnvntgX8EfKwgPBfuPJCV,solana,Pump.fun,random_new,2026-09-26T01:46:15.417499+00:00,2026-09-26T01:44:49Z,new_pools_sampled_p=0.25,0.25,2026-09-28T01:46:15.417499+00:00
+99f6oPH3aE9L4iEj22ijwVjiAJUidJHBbqBsxLdkLc8G,solana,Pump.fun,random_new,2026-09-26T01:46:15.417499+00:00,2026-09-26T01:44:45Z,new_pools_sampled_p=0.25,0.25,2026-09-28T01:46:15.417499+00:00
