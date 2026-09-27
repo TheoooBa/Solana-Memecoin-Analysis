@@ -1,2 +1,3 @@
 run_id,started_at_utc,finished_at_utc,network,calls_made,calls_budget,errors_count,errors_json,pools_discovered_trending,pools_discovered_random,pools_snapshotted,pools_backfilled,pools_status_events,exit_reason
 522d7234-dc31-4429-8fb4-10222c51d169,2026-09-27T01:54:36.604398+00:00,2026-09-27T01:56:06.991320+00:00,solana,13,60,3,"[""ohlcv: HTTP 429 tentative 1"", ""ohlcv: HTTP 429 tentative 1"", ""ohlcv: HTTP 429 tentative 2""]",0,5,74,5,8,completed
+3f6f1b16-9e5d-4203-84e8-acd203200953,2026-09-27T07:28:35.689293+00:00,2026-09-27T07:30:06.331590+00:00,solana,13,60,3,"[""ohlcv: HTTP 429 tentative 1"", ""ohlcv: HTTP 429 tentative 1"", ""ohlcv: HTTP 429 tentative 2""]",2,3,73,5,6,completed
