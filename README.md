@@ -31,6 +31,15 @@ plusieurs semaines de données réunies.
 Pour mettre en place la collecte automatique toi-même :
 [docs/guide_github_actions.md](docs/guide_github_actions.md).
 
+**Correctif de cadence (2026-09-29)** : le cron interne de GitHub Actions
+(`schedule:`) ne tient pas l'intervalle de 5 minutes configuré — mesuré en
+production, la cadence réelle tournait autour de 4h de moyenne entre deux
+collectes (documentation officielle GitHub : les événements `schedule`
+« peuvent être retardés en période de forte charge », contrairement à
+`workflow_dispatch`, déclenché via API). Voir
+[docs/guide_cron_externe.md](docs/guide_cron_externe.md) pour la mise en
+place d'un minuteur externe qui contourne ce problème.
+
 ## Univers suivi et biais
 
 Pas de filtre par plateforme de lancement (pump.fun, etc.) : tous les pools
