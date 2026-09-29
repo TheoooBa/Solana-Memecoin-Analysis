@@ -13,3 +13,4 @@ c6b1450a-bc01-4c34-be0e-0feeed7e49d6,2026-09-29T11:15:32.740861+00:00,2026-09-29
 6b15ce5e-32d2-4d2e-8201-51a069e36741,2026-09-29T11:40:38.129337+00:00,2026-09-29T11:41:15.841257+00:00,solana,6,60,0,[],0,0,93,0,0,completed
 9ffed99c-e0a5-45ae-ab60-b5f1ac7378bf,2026-09-29T11:45:33.121640+00:00,2026-09-29T11:47:03.406618+00:00,solana,13,60,3,"[""ohlcv: HTTP 429 tentative 1"", ""ohlcv: HTTP 429 tentative 2"", ""ohlcv: HTTP 429 tentative 1""]",0,4,97,4,0,completed
 f1f9836a-5aa3-4f52-8d18-0f03d119de76,2026-09-29T11:51:14.752188+00:00,2026-09-29T11:52:30.042172+00:00,solana,11,60,2,"[""ohlcv: HTTP 429 tentative 1"", ""ohlcv: HTTP 429 tentative 1""]",0,3,100,3,0,completed
+178d52a4-4169-4cb6-b4d0-f73f236b48c4,2026-09-29T11:55:35.477601+00:00,2026-09-29T11:57:28.337199+00:00,solana,16,60,4,"[""ohlcv: HTTP 429 tentative 1"", ""ohlcv: HTTP 429 tentative 1"", ""ohlcv: HTTP 429 tentative 2"", ""ohlcv: HTTP 429 tentative 1""]",0,6,106,6,0,completed
