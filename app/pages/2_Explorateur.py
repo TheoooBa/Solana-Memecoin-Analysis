@@ -64,14 +64,22 @@ display_cols = {
     "price_usd": "Dernier prix ($)", "reserve_usd": "Réserve ($)", "discovered_at_utc": "Découvert le",
 }
 shown = filtered.rename(columns=display_cols)[list(display_cols.values()) + ["pool_address"]]
+shown = shown.drop(columns=["pool_address"])
+shown["Token"] = shown["Token"].fillna("?")
+shown["DEX"] = shown["DEX"].fillna("?")
+# Pas encore de "snapshot" pour ce pool (découvert au run le plus récent, pas
+# encore repris par un lot multi-pools) : un vrai "pas encore", pas une erreur.
+shown["Dernier prix ($)"] = shown["Dernier prix ($)"].fillna("en attente du prochain run")
+shown["Réserve ($)"] = shown["Réserve ($)"].fillna("en attente du prochain run")
 st.dataframe(
-    shown.drop(columns=["pool_address"]),
+    shown,
     hide_index=True, use_container_width=True, height=350,
 )
 
 st.markdown("### Détail d'un pool")
 options = filtered.apply(
-    lambda r: f"{r['base_token_symbol'] or '?'} — {r['pool_address'][:10]}…", axis=1
+    lambda r: f"{r['base_token_symbol'] if pd.notna(r['base_token_symbol']) else '?'} — {r['pool_address'][:10]}…",
+    axis=1,
 ).tolist()
 if not options:
     st.info("Aucun pool dans ce groupe.")

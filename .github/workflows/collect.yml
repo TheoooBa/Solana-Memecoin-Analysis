@@ -23,8 +23,12 @@ jobs:
   collect:
     runs-on: ubuntu-latest
     # Coupe-circuit : un run bloqué ne doit pas faire attendre indéfiniment
-    # les exécutions suivantes mises en file par `concurrency`.
-    timeout-minutes: 8
+    # les exécutions suivantes mises en file par `concurrency`. Relevé de 8 à
+    # 15 le 2026-10-01 : mesuré en production après le déploiement des phases
+    # token_info + RugCheck, un run dure maintenant ~7,6 min en moyenne et a
+    # déjà atteint ~8,5 min — l'ancienne valeur risquait de tuer des runs
+    # normaux, pas seulement des runs réellement bloqués.
+    timeout-minutes: 15
     steps:
       - name: Checkout du code (branche par défaut)
         uses: actions/checkout@v4
