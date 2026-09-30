@@ -1,0 +1,5 @@
+pool_address,network,dex,group,discovered_at_utc,pool_created_at,reason,sampling_probability,tracking_until_utc,base_token_address,schema_version
+C5CBxNcbb1uEKDypEZcd2Kz2WgjwbzJ1pWXmq7WpnBCD,solana,Meteora DAMM V2,random_new,2026-09-30T07:02:11.039354+00:00,2026-09-30T06:59:09Z,new_pools_sampled_p=0.25,0.25,2026-10-02T07:02:11.039354+00:00,24Ynq8kZBmcnbVXwVzqKSctUDDmTtBKfjAaAXT7iWQwS,2
+fDnhpWKfcn4STaKZxdUw9Vdif3DnodVRvF5T7Ea4tRq,solana,Pump.fun,random_new,2026-09-30T07:02:11.039354+00:00,2026-09-30T06:59:03Z,new_pools_sampled_p=0.25,0.25,2026-10-02T07:02:11.039354+00:00,Hnyv2MY5xCp5Y2q3hoLTguaWSMRC4PosHdxC3tLTpump,2
+HgJEixizFBvE9FCStqGKyyuzkmMmHfj8e7Dpe6SLXZu9,solana,PumpSwap,random_new,2026-09-30T07:02:11.039354+00:00,2026-09-30T06:59:00Z,new_pools_sampled_p=0.25,0.25,2026-10-02T07:02:11.039354+00:00,8Qp31uGu7XErN9cuaEYMrWmfEPPLK3GWmKpzKpsgbonk,2
+FSSWKcTkxMGE3iqiTNJhFiKEdY5r5zWXVutoCumcNLfx,solana,Pump.fun,random_new,2026-09-30T07:02:11.039354+00:00,2026-09-30T06:58:52Z,new_pools_sampled_p=0.25,0.25,2026-10-02T07:02:11.039354+00:00,2k9UafVWLS5sH7F2UqTUVszFEpkVFd3cxDSpBWeNpump,2
