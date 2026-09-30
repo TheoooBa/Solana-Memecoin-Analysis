@@ -1,3 +1,8 @@
 requests>=2.31
 PyYAML>=6.0
 pytest>=8.0
+
+# Tableau de bord (étape 4) : lecture seule de data/smc.sqlite3, jamais de
+# collecte ni d'appel API depuis l'app elle-même.
+streamlit>=1.32
+pandas>=2.0

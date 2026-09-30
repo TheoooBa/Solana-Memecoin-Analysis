@@ -16,17 +16,20 @@ sera présenté que s'il tient sur des données gelées, mesurées après coûts
 Aucun wallet, aucune clé privée, aucun code n'envoie de transaction. Aucune
 dépendance payante. Aucun compte n'est créé pour toi.
 
-Données : [GeckoTerminal](https://www.geckoterminal.com/) (API publique
-gratuite). Merci de conserver cette attribution si tu réutilises ce projet ou
-son tableau de bord.
+Données : [GeckoTerminal](https://www.geckoterminal.com/) et
+[RugCheck.xyz](https://rugcheck.xyz/) (API publiques gratuites). Merci de
+conserver cette attribution si tu réutilises ce projet ou son tableau de bord.
 
 ## Où en est le projet
 
 Étape 2 sur 4 (voir la feuille de route en bas de page) : **collecte
 automatique via GitHub Actions**, en plus de l'étape 1 (collecte locale,
-stockage, tests) déjà en place. Le module d'analyse, le simulateur, le gel
-de configuration et le tableau de bord viennent après, seulement une fois
-plusieurs semaines de données réunies.
+stockage, tests) déjà en place — enrichie depuis le 2026-09-30 d'un schéma
+plus riche et d'une vraie détection anti-honeypot (RugCheck.xyz, voir plus
+bas). Une première version du tableau de bord (étape 4) existe déjà en local
+(`app/`), lisible sur les données déjà collectées, mais le module d'analyse
+et son gel de configuration (étape 3) n'ont pas encore commencé — ils
+attendent plusieurs semaines de données réunies avant de s'appuyer dessus.
 
 Pour mettre en place la collecte automatique toi-même :
 [docs/guide_github_actions.md](docs/guide_github_actions.md).
@@ -158,14 +161,21 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
+# Pas de packaging pour ce projet (voir tests/conftest.py) : PYTHONPATH=src
+# est nécessaire pour toutes les commandes ci-dessous.
+
 # Une collecte unique, idempotente (peut être relancée à la main ou par cron/Actions)
-python -m smc_collector.cli collect
+PYTHONPATH=src python -m smc_collector.cli collect
 
 # Recharge tous les CSV dans une base SQLite locale pour exploration
-python -m smc_collector.cli build-db
+PYTHONPATH=src python -m smc_collector.cli build-db
 
 # Diagnostic ponctuel : l'historique OHLCV existe-t-il encore pour des pools déjà morts ?
-python -m smc_collector.cli diagnose-dead-pools
+PYTHONPATH=src python -m smc_collector.cli diagnose-dead-pools
+
+# Tableau de bord local, en lecture seule sur data/smc.sqlite3 (construit
+# avec build-db ci-dessus) — voir section "Tableau de bord" plus bas.
+streamlit run app/Home.py
 ```
 
 Une clé "Demo" CoinGecko est optionnelle (voir `.env.example`) : la collecte
@@ -190,6 +200,33 @@ essai suivant, et le run s'est terminé sans perte de données
 (`exit_reason=completed`). Ne descends pas `calls_per_minute` en dessous de
 cette valeur sans revoir aussi `max_retries` en conséquence. Ajuste
 `calls_per_minute` à la hausse si tu observes empiriquement plus de marge.
+
+## Tableau de bord (étape 4, première version)
+
+`app/` — application Streamlit, cinq pages : Accueil, Collecte, Explorateur
+de pools, Analyse, Réseaux. **Lecture seule** : aucune collecte, aucun appel
+API et aucune transaction depuis l'app elle-même, uniquement des requêtes SQL
+sur `data/smc.sqlite3` (reconstruite par `build-db`, jamais la source de
+vérité).
+
+- **Accueil** : santé du collecteur, taille des groupes tendance/témoin,
+  variations de prix les plus marquées sur la fenêtre de données la plus récente.
+- **Collecte** : cadence réelle entre exécutions, budget d'appels, erreurs.
+- **Explorateur** : tous les pools suivis, filtrables par groupe, avec le
+  détail (historique de prix, sécurité GeckoTerminal/RugCheck si déjà
+  interrogé) d'un pool choisi dans notre propre jeu de données — pas une
+  redite d'une fiche token que GeckoTerminal ou RugCheck proposent déjà
+  chacun en direct.
+- **Analyse** : affiche honnêtement « aucun avantage démontré » tant que
+  l'étape 3 (module d'analyse, gel de configuration) n'a pas commencé —
+  aucune règle fabriquée n'y apparaît.
+- **Réseaux** : état vide assumé (pas de scraping X/Telegram par conception).
+
+Déploiement prévu sur Streamlit Community Cloud, accès restreint. En local,
+la base peut être vide ou incomplète pour les colonnes `token_info`/
+`rugcheck_info` tant que la collecte enrichie (voir plus haut) n'a pas encore
+tourné en production — l'app le signale plutôt que d'afficher des valeurs
+inventées.
 
 ## Rapport : historique OHLCV pour des pools morts
 
@@ -218,9 +255,10 @@ Telegram, choix des seuils d'analyse à la place de l'utilisateur.
 ## Prochaines étapes
 
 1. ~~Collecte, stockage, journalisation, tests, démonstration locale~~
-2. ~~Workflow GitHub Actions (collecte toutes les 5 minutes) + guide de mise en place~~ (cette étape)
+2. ~~Workflow GitHub Actions (collecte toutes les 5 minutes) + guide de mise en place~~,
+   ~~schéma enrichi + détection anti-honeypot réelle (RugCheck.xyz)~~ (cette étape)
 3. Une fois plusieurs semaines de données réunies : module d'analyse,
    simulateur, gel de configuration
-4. Tableau de bord interactif (Streamlit) donnant accès à toutes ces
-   statistiques — santé du collecteur, composition de l'univers, résultats
-   avec effectifs et intervalles de confiance
+4. ~~Première version du tableau de bord (Streamlit, lecture seule)~~ —
+   reste à faire : déploiement sur Streamlit Community Cloud (accès
+   restreint), et la page Analyse une fois l'étape 3 commencée
