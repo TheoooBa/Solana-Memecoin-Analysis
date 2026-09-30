@@ -85,6 +85,19 @@ réécrits ni élagués :
     **avant** notre première observation d'un pool nouvellement découvert.
 - `data/raw/pool_status/AAAA-MM-JJ.csv` — événements de cycle de vie
   (fin de fenêtre de suivi, pool absent d'une réponse groupée, etc.).
+- `data/raw/trending_ranks/AAAA-MM-JJ.csv` et `data/raw/new_pool_ranks/AAAA-MM-JJ.csv`
+  — le rang d'un pool dans chacune de ces deux listes, à **chaque** exécution
+  où il y apparaît (pas seulement à sa découverte) : une boîte noire sans
+  historique côté source, irrécupérable après coup si non captée sur le moment.
+- `data/raw/token_info/AAAA-MM-JJ.csv` — un appel `/tokens/{adresse}/info`
+  (GeckoTerminal) par pool, à sa découverte : score de confiance,
+  concentration des détenteurs, autorités mint/freeze, part développeur,
+  indicateur honeypot brut (souvent "unknown" en pratique — voir la section
+  RugCheck ci-dessous). `data/raw/token_info_status/` journalise les échecs et
+  les pools définitivement marqués indisponibles.
+- `data/raw/rugcheck_info/AAAA-MM-JJ.csv` et `data/raw/rugcheck_status/AAAA-MM-JJ.csv`
+  — détection anti-honeypot réelle via RugCheck.xyz, même principe (un appel
+  par pool à sa découverte). Voir section dédiée ci-dessous.
 - `data/logs/runs/AAAA-MM-JJ.csv` — une ligne par exécution de `collect`
   (appels effectués, erreurs, pools vus), pour repérer les trous de collecte.
 
@@ -96,6 +109,35 @@ Le dépôt Git a deux branches : `main` (code, config, tests) et `data` (les
 CSV ci-dessus, à sa racine — pas de sous-dossier `data/` imbriqué sur cette
 branche). Voir [docs/guide_github_actions.md](docs/guide_github_actions.md)
 pour la mise en place.
+
+## Détection anti-honeypot réelle (RugCheck.xyz)
+
+Le champ `is_honeypot` de GeckoTerminal renvoie presque systématiquement
+"unknown" en pratique — inutilisable comme signal. RugCheck.xyz (API
+publique, gratuite, sans clé, vérifiée par appels réels le 2026-09-29 puis
+reconfirmée le 2026-09-30, y compris sur un pool créé quelques secondes plus
+tôt) détecte de vrais vecteurs d'arnaque : extensions Token-2022 dangereuses
+("permanent delegate" pouvant déplacer les tokens de n'importe quel
+portefeuille, "transfer hook" pouvant bloquer les ventes à volonté, compte
+gelable par défaut), taxe de transfert cachée, verrouillage réel de la
+liquidité, et détection de réseaux d'insiders coordonnés parmi les
+détenteurs. Un appel par pool, à sa découverte, jamais réinterrogé.
+
+Deux différences volontaires avec `token_info` :
+
+- **Aucune réponse brute conservée** : ~12 Ko par appel, plus de 2x le seuil
+  déjà retenu pour `token_info`, pour une valeur ajoutée jugée insuffisante
+  par l'audit (voir `reports/rugcheck_audit_2026-09-29.md`) — seuls les
+  champs ciblés sont stockés.
+- **Un 404 ("pas encore indexé") n'est jamais compté comme un échec** :
+  contrairement à un vrai échec (500, timeout...), il ne fait pas avancer le
+  compteur d'un pool vers "indisponible" et ne déclenche jamais le
+  coupe-circuit — le pool reste éligible indéfiniment, retenté au run suivant.
+
+Même prudence que pour GeckoTerminal à l'origine sur le débit : l'en-tête
+observé (`x-rate-limit-limit: 15`) ne précise pas la fenêtre temporelle, donc
+`config/collection.yaml: rugcheck.calls_per_minute` démarre conservateur (8,
+comme GeckoTerminal) plutôt que de présumer une limite favorable.
 
 ## Cache brut sur GitHub Actions : une limite assumée
 

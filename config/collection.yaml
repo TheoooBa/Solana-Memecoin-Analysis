@@ -67,6 +67,60 @@ ohlcv_backfill:
   aggregate: 5
   max_candles_per_pool: 500
 
+token_info:
+  # /tokens/{address}/info : score de confiance, concentration des détenteurs,
+  # autorités mint/freeze, part développeur, indicateur honeypot. Gratuit en
+  # pratique sur cette surface (vérifié le 2026-09-21) mais documenté payant
+  # sur la nouvelle API CoinGecko — peut donc se fermer sans préavis (voir
+  # token_info.py pour le coupe-circuit). Un seul appel par pool, à sa
+  # découverte, jamais réinterrogé plus tard.
+  max_calls_per_run: 10
+
+  # Coupure de sécurité : au-delà de cette durée d'exécution écoulée (depuis
+  # le début du run, pas depuis le début de cette phase), on arrête les
+  # appels info pour ce run — les pools restants sont repris au run suivant.
+  max_total_run_seconds: 180
+
+  # Après ce nombre d'échecs cumulés pour un même pool, il est marqué
+  # "indisponible" et n'est plus jamais retenté (ne reste jamais bloqué en
+  # file d'attente indéfiniment). Réutilisé aussi comme seuil du coupe-circuit
+  # "erreurs en série" qui arrête tous les appels info du run en cours.
+  max_failures_before_unavailable: 3
+
+  # Taille max (octets, JSON sérialisé) en dessous de laquelle la réponse
+  # brute est conservée telle quelle ; au-delà, seuls les champs parsés sont
+  # gardés.
+  max_raw_json_bytes: 5000
+
+rugcheck:
+  # RugCheck.xyz : détection anti-honeypot réelle (extensions Token-2022
+  # dangereuses type "permanent delegate"/"transfer hook", taxe de transfert,
+  # verrouillage LP, réseaux d'insiders coordonnés) que ni GeckoTerminal ni
+  # notre is_honeypot actuel (quasi toujours "unknown" en pratique) ne
+  # couvrent. Audit complet et appels réels vérifiés le 2026-09-29 et
+  # reconfirmés le 2026-09-30 (voir reports/rugcheck_audit_2026-09-29.md).
+  # Gratuit, sans clé, mais fenêtre du débit annoncé (x-rate-limit-limit: 15)
+  # non confirmée par la documentation : débit volontairement aussi
+  # conservateur qu'à l'origine pour GeckoTerminal. Un seul appel par pool, à
+  # sa découverte, jamais réinterrogé une fois réussi.
+  base_url: "https://api.rugcheck.xyz/v1"
+  calls_per_minute: 8
+  max_calls_per_run: 10
+  request_timeout_seconds: 15
+  max_retries: 5
+  backoff_base_seconds: 2.0
+  backoff_max_seconds: 60.0
+
+  # Coupure de sécurité : au-delà de cette durée d'exécution écoulée (depuis
+  # le début du run), on arrête les appels RugCheck pour ce run — les pools
+  # restants sont repris au run suivant.
+  max_total_run_seconds: 90
+
+  # Après ce nombre d'échecs RÉELS cumulés pour un même pool (un mint "pas
+  # encore indexé", HTTP 404, ne compte jamais comme un échec — voir
+  # rugcheck.py), il est marqué "indisponible" et n'est plus jamais retenté.
+  max_failures_before_unavailable: 3
+
 storage:
   raw_dir: "data/raw"
   cache_dir: "data/cache"

@@ -12,7 +12,18 @@ import sqlite3
 from pathlib import Path
 
 from .config import CollectionConfig
-from .models import PoolDiscovery, PoolSnapshot, PoolStatusEvent, RunLog
+from .models import (
+    ListRankObservation,
+    PoolDiscovery,
+    PoolSnapshot,
+    PoolStatusEvent,
+    RugcheckInfoRecord,
+    RugcheckStatusEvent,
+    RunLog,
+    TokenInfoRecord,
+    TokenInfoStatusEvent,
+)
+from .parsing import PERIODS
 from .storage import read_all_rows
 
 logger = logging.getLogger(__name__)
@@ -20,16 +31,25 @@ logger = logging.getLogger(__name__)
 _SQLITE_TYPE_OVERRIDES = {
     # Colonnes numériques explicites ; tout le reste est TEXT (CSV n'a pas de types).
     "price_usd": "REAL", "fdv_usd": "REAL", "market_cap_usd": "REAL", "reserve_usd": "REAL",
-    "volume_usd_m5": "REAL", "volume_usd_h1": "REAL", "volume_usd_h24": "REAL",
-    "buys_m5": "INTEGER", "sells_m5": "INTEGER", "buyers_m5": "INTEGER", "sellers_m5": "INTEGER",
-    "buys_h1": "INTEGER", "sells_h1": "INTEGER", "buyers_h1": "INTEGER", "sellers_h1": "INTEGER",
-    "buys_h24": "INTEGER", "sells_h24": "INTEGER", "buyers_h24": "INTEGER", "sellers_h24": "INTEGER",
+    "quote_token_price_usd": "REAL", "locked_liquidity_pct": "REAL", "pool_fee_pct": "REAL",
     "ohlcv_open": "REAL", "ohlcv_high": "REAL", "ohlcv_low": "REAL", "ohlcv_close": "REAL",
     "ohlcv_volume": "REAL",
     "sampling_probability": "REAL",
     "calls_made": "INTEGER", "calls_budget": "INTEGER", "errors_count": "INTEGER",
     "pools_discovered_trending": "INTEGER", "pools_discovered_random": "INTEGER",
     "pools_snapshotted": "INTEGER", "pools_backfilled": "INTEGER", "pools_status_events": "INTEGER",
+    "schema_version": "INTEGER", "rank": "INTEGER",
+    "gt_score": "REAL", "holders_top10_pct": "REAL", "holders_11_20_pct": "REAL",
+    "holders_21_40_pct": "REAL", "holders_rest_pct": "REAL", "developer_holding_percentage": "REAL",
+    "score": "REAL", "score_normalised": "REAL", "risks_count": "INTEGER",
+    "transfer_fee_pct": "REAL", "lp_locked_pct": "REAL", "graph_insiders_detected": "INTEGER",
+    "top_holder_pct": "REAL", "insider_holders_count": "INTEGER", "insider_holders_pct_sum": "REAL",
+    "creator_balance": "REAL",
+    **{
+        f"{prefix}_{period}": "REAL" if prefix in ("volume_usd", "price_change_pct") else "INTEGER"
+        for prefix in ("volume_usd", "price_change_pct", "buys", "sells", "buyers", "sellers")
+        for period in PERIODS
+    },
 }
 
 
@@ -68,10 +88,20 @@ def build_database(config: CollectionConfig, db_path: Path) -> dict[str, int]:
             "pool_registry": _load_table(conn, "pool_registry", config.registry_dir, PoolDiscovery.fieldnames()),
             "pool_status_events": _load_table(conn, "pool_status_events", config.status_dir, PoolStatusEvent.fieldnames()),
             "collector_runs": _load_table(conn, "collector_runs", config.runs_log_dir, RunLog.fieldnames()),
+            "trending_ranks": _load_table(conn, "trending_ranks", config.trending_ranks_dir, ListRankObservation.fieldnames()),
+            "new_pool_ranks": _load_table(conn, "new_pool_ranks", config.new_pool_ranks_dir, ListRankObservation.fieldnames()),
+            "token_info": _load_table(conn, "token_info", config.token_info_dir, TokenInfoRecord.fieldnames()),
+            "token_info_status": _load_table(conn, "token_info_status", config.token_info_status_dir, TokenInfoStatusEvent.fieldnames()),
+            "rugcheck_info": _load_table(conn, "rugcheck_info", config.rugcheck_info_dir, RugcheckInfoRecord.fieldnames()),
+            "rugcheck_status": _load_table(conn, "rugcheck_status", config.rugcheck_status_dir, RugcheckStatusEvent.fieldnames()),
         }
         conn.execute('CREATE INDEX IF NOT EXISTS idx_snapshots_pool ON pool_snapshots("pool_address")')
         conn.execute('CREATE INDEX IF NOT EXISTS idx_registry_pool ON pool_registry("pool_address")')
         conn.execute('CREATE INDEX IF NOT EXISTS idx_status_pool ON pool_status_events("pool_address")')
+        conn.execute('CREATE INDEX IF NOT EXISTS idx_trending_ranks_ts ON trending_ranks("request_timestamp_utc")')
+        conn.execute('CREATE INDEX IF NOT EXISTS idx_new_pool_ranks_ts ON new_pool_ranks("request_timestamp_utc")')
+        conn.execute('CREATE INDEX IF NOT EXISTS idx_token_info_pool ON token_info("pool_address")')
+        conn.execute('CREATE INDEX IF NOT EXISTS idx_rugcheck_info_pool ON rugcheck_info("pool_address")')
         conn.commit()
     finally:
         conn.close()

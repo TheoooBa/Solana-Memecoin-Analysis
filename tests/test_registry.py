@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
-from smc_collector.models import PoolDiscovery, PoolStatusEvent
-from smc_collector.parsing import ParsedPool
+from smc_collector.models import SCHEMA_VERSION, PoolDiscovery, PoolStatusEvent
+from smc_collector.parsing import PERIODS, ParsedPool
 from smc_collector.registry import (
     PoolState,
     deterministic_sample_decision,
@@ -19,18 +19,38 @@ def _make_parsed(address: str, dex: str = "pumpswap") -> ParsedPool:
     p.base_token_symbol = "SYM"
     p.quote_token_address = "SOL"
     p.quote_token_symbol = "SOL"
+    p.quote_token_price_usd = 150.0
     p.pool_created_at = "2026-09-20T00:00:00Z"
     p.price_usd = 0.001
     p.fdv_usd = 1000.0
     p.market_cap_usd = 1000.0
     p.reserve_usd = 500.0
-    p.volume_usd_m5 = 1.0
-    p.volume_usd_h1 = 2.0
-    p.volume_usd_h24 = 3.0
-    for period in ("m5", "h1", "h24"):
+    p.locked_liquidity_pct = 100.0
+    p.pool_fee_pct = 1.0
+    for period in PERIODS:
+        setattr(p, f"volume_usd_{period}", 1.0)
+        setattr(p, f"price_change_pct_{period}", 0.5)
         for field in ("buys", "sells", "buyers", "sellers"):
             setattr(p, f"{field}_{period}", 1)
     return p
+
+
+def _make_discovery(**overrides) -> PoolDiscovery:
+    defaults = dict(
+        pool_address="p1",
+        network="solana",
+        dex="pumpswap",
+        group="trending",
+        discovered_at_utc=datetime(2026, 9, 21, tzinfo=timezone.utc).isoformat(),
+        pool_created_at="2026-09-20T00:00:00Z",
+        reason="trending_rank_1",
+        sampling_probability=1.0,
+        tracking_until_utc=(datetime(2026, 9, 21, tzinfo=timezone.utc) + timedelta(hours=48)).isoformat(),
+        base_token_address="BASE",
+        schema_version=SCHEMA_VERSION,
+    )
+    defaults.update(overrides)
+    return PoolDiscovery(**defaults)
 
 
 class TestDeterministicSampling:
@@ -130,17 +150,7 @@ class TestLoadUniverse:
         status_dir = tmp_path / "pool_status"
         now = datetime(2026, 9, 21, tzinfo=timezone.utc)
 
-        discovery = PoolDiscovery(
-            pool_address="p1",
-            network="solana",
-            dex="pumpswap",
-            group="trending",
-            discovered_at_utc=now.isoformat(),
-            pool_created_at="2026-09-20T00:00:00Z",
-            reason="trending_rank_1",
-            sampling_probability=1.0,
-            tracking_until_utc=(now + timedelta(hours=48)).isoformat(),
-        )
+        discovery = _make_discovery(discovered_at_utc=now.isoformat(), tracking_until_utc=(now + timedelta(hours=48)).isoformat())
         AppendOnlyCsvWriter(registry_dir, PoolDiscovery.fieldnames()).append_rows([discovery.as_row()], dt=now)
 
         universe = load_universe(registry_dir, status_dir)
@@ -155,17 +165,7 @@ class TestLoadUniverse:
         status_dir = tmp_path / "pool_status"
         now = datetime(2026, 9, 21, tzinfo=timezone.utc)
 
-        discovery = PoolDiscovery(
-            pool_address="p1",
-            network="solana",
-            dex="pumpswap",
-            group="trending",
-            discovered_at_utc=now.isoformat(),
-            pool_created_at="2026-09-20T00:00:00Z",
-            reason="trending_rank_1",
-            sampling_probability=1.0,
-            tracking_until_utc=(now + timedelta(hours=48)).isoformat(),
-        )
+        discovery = _make_discovery(discovered_at_utc=now.isoformat(), tracking_until_utc=(now + timedelta(hours=48)).isoformat())
         AppendOnlyCsvWriter(registry_dir, PoolDiscovery.fieldnames()).append_rows([discovery.as_row()], dt=now)
 
         event = PoolStatusEvent(
@@ -173,6 +173,7 @@ class TestLoadUniverse:
             event_at_utc=(now + timedelta(hours=49)).isoformat(),
             event_type="tracking_window_ended",
             detail="fin de fenêtre",
+            schema_version=SCHEMA_VERSION,
         )
         AppendOnlyCsvWriter(status_dir, PoolStatusEvent.fieldnames()).append_rows([event.as_row()], dt=now)
 
@@ -185,20 +186,33 @@ class TestLoadUniverse:
         status_dir = tmp_path / "pool_status"
         now = datetime(2026, 9, 21, tzinfo=timezone.utc)
 
-        discovery = PoolDiscovery(
-            pool_address="p1", network="solana", dex="pumpswap", group="trending",
-            discovered_at_utc=now.isoformat(), pool_created_at="2026-09-20T00:00:00Z",
-            reason="trending_rank_1", sampling_probability=1.0,
-            tracking_until_utc=(now + timedelta(hours=48)).isoformat(),
-        )
+        discovery = _make_discovery(discovered_at_utc=now.isoformat(), tracking_until_utc=(now + timedelta(hours=48)).isoformat())
         AppendOnlyCsvWriter(registry_dir, PoolDiscovery.fieldnames()).append_rows([discovery.as_row()], dt=now)
 
         event = PoolStatusEvent(
             pool_address="p1", event_at_utc=now.isoformat(),
             event_type="missing_from_multi_pool_response", detail="absent une fois",
+            schema_version=SCHEMA_VERSION,
         )
         AppendOnlyCsvWriter(status_dir, PoolStatusEvent.fieldnames()).append_rows([event.as_row()], dt=now)
 
         universe = load_universe(registry_dir, status_dir)
         assert universe["p1"].stopped is False
+        assert universe["p1"].is_active(now + timedelta(hours=1))
+
+    def test_ignores_pools_missing_base_token_address_for_info_selection(self, tmp_path):
+        """Un pool découvert avant l'ajout de base_token_address (v1) reste
+        chargeable normalement par load_universe : cette colonne ne concerne
+        que la sélection pour l'info token (voir test_token_info.py)."""
+        registry_dir = tmp_path / "pool_registry"
+        status_dir = tmp_path / "pool_status"
+        now = datetime(2026, 9, 21, tzinfo=timezone.utc)
+
+        # Simule un fichier v1 : colonnes base_token_address/schema_version absentes.
+        v1_fieldnames = [f for f in PoolDiscovery.fieldnames() if f not in ("base_token_address", "schema_version")]
+        row = {k: v for k, v in _make_discovery(discovered_at_utc=now.isoformat()).as_row().items() if k in v1_fieldnames}
+        AppendOnlyCsvWriter(registry_dir, v1_fieldnames).append_rows([row], dt=now)
+
+        universe = load_universe(registry_dir, status_dir)
+        assert "p1" in universe
         assert universe["p1"].is_active(now + timedelta(hours=1))

@@ -111,7 +111,7 @@ def select_new_discoveries(
 
     Retourne une liste de dicts prêts à devenir des `PoolDiscovery`.
     """
-    from .models import PoolDiscovery
+    from .models import SCHEMA_VERSION, PoolDiscovery
 
     tracking_until = (now + timedelta(hours=tracking_duration_hours)).isoformat()
     discoveries: list[PoolDiscovery] = []
@@ -133,6 +133,8 @@ def select_new_discoveries(
                 reason=f"trending_rank_{rank}",
                 sampling_probability=1.0,
                 tracking_until_utc=tracking_until,
+                base_token_address=pool.base_token_address,
+                schema_version=SCHEMA_VERSION,
             )
         )
 
@@ -154,6 +156,8 @@ def select_new_discoveries(
                 reason=f"new_pools_sampled_p={sample_probability}",
                 sampling_probability=sample_probability,
                 tracking_until_utc=tracking_until,
+                base_token_address=pool.base_token_address,
+                schema_version=SCHEMA_VERSION,
             )
         )
 

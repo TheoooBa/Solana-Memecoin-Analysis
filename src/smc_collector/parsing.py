@@ -42,9 +42,18 @@ def index_included(raw: dict[str, Any]) -> dict[tuple[str, str], dict[str, Any]]
     return index
 
 
+PERIODS = ("m5", "m15", "m30", "h1", "h6", "h24")
+
+
 class ParsedPool:
     """Vue normalisée d'un objet "pool" JSON:API, indépendante de l'endpoint
-    qui l'a produit (trending, new_pools, multi)."""
+    qui l'a produit (trending, new_pools, multi).
+
+    `locked_liquidity_pct` et `pool_fee_pct` ne sont présents que dans la
+    réponse de l'endpoint multi-pools (absents de trending_pools/new_pools) :
+    ils valent None quand parsés depuis ces deux derniers, ce qui est le
+    comportement correct (pas une perte de parsing).
+    """
 
     __slots__ = (
         "pool_address",
@@ -53,26 +62,20 @@ class ParsedPool:
         "base_token_symbol",
         "quote_token_address",
         "quote_token_symbol",
+        "quote_token_price_usd",
         "pool_created_at",
         "price_usd",
         "fdv_usd",
         "market_cap_usd",
         "reserve_usd",
-        "volume_usd_m5",
-        "volume_usd_h1",
-        "volume_usd_h24",
-        "buys_m5",
-        "sells_m5",
-        "buyers_m5",
-        "sellers_m5",
-        "buys_h1",
-        "sells_h1",
-        "buyers_h1",
-        "sellers_h1",
-        "buys_h24",
-        "sells_h24",
-        "buyers_h24",
-        "sellers_h24",
+        "locked_liquidity_pct",
+        "pool_fee_pct",
+        *(f"volume_usd_{p}" for p in PERIODS),
+        *(f"buys_{p}" for p in PERIODS),
+        *(f"sells_{p}" for p in PERIODS),
+        *(f"buyers_{p}" for p in PERIODS),
+        *(f"sellers_{p}" for p in PERIODS),
+        *(f"price_change_pct_{p}" for p in PERIODS),
     )
 
 
@@ -101,17 +104,21 @@ def parse_pool_entry(entry: dict[str, Any], included_index: dict[tuple[str, str]
 
     parsed.pool_created_at = attrs.get("pool_created_at")
     parsed.price_usd = _to_float(attrs.get("base_token_price_usd"))
+    parsed.quote_token_price_usd = _to_float(attrs.get("quote_token_price_usd"))
     parsed.fdv_usd = _to_float(attrs.get("fdv_usd"))
     parsed.market_cap_usd = _to_float(attrs.get("market_cap_usd"))
     parsed.reserve_usd = _to_float(attrs.get("reserve_in_usd"))
+    # Absents de trending_pools/new_pools, présents uniquement sur multi-pools :
+    # None dans le premier cas est le comportement attendu, pas une perte.
+    parsed.locked_liquidity_pct = _to_float(attrs.get("locked_liquidity_percentage"))
+    parsed.pool_fee_pct = _to_float(attrs.get("pool_fee_percentage"))
 
     volume = attrs.get("volume_usd") or {}
-    parsed.volume_usd_m5 = _to_float(volume.get("m5"))
-    parsed.volume_usd_h1 = _to_float(volume.get("h1"))
-    parsed.volume_usd_h24 = _to_float(volume.get("h24"))
-
     tx = attrs.get("transactions") or {}
-    for period in ("m5", "h1", "h24"):
+    price_change = attrs.get("price_change_percentage") or {}
+    for period in PERIODS:
+        setattr(parsed, f"volume_usd_{period}", _to_float(volume.get(period)))
+        setattr(parsed, f"price_change_pct_{period}", _to_float(price_change.get(period)))
         period_tx = tx.get(period) or {}
         setattr(parsed, f"buys_{period}", _to_int(period_tx.get("buys")))
         setattr(parsed, f"sells_{period}", _to_int(period_tx.get("sells")))

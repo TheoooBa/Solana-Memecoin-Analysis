@@ -21,3 +21,7 @@ venv/
 
 # macOS
 .DS_Store
+
+# Scratch de conception (maquette Artifact) : jamais une source de vérité,
+# vit dans le canvas de design en ligne, pas dans le dépôt.
+.tmp_design/

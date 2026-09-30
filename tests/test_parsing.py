@@ -61,6 +61,93 @@ def test_parse_pool_list_extracts_core_fields():
     assert pool.sellers_m5 == 0
 
 
+def test_parse_pool_list_fields_absent_from_trending_are_none():
+    """trending_pools/new_pools n'exposent ni locked_liquidity_percentage, ni
+    pool_fee_percentage, ni quote_token_price_usd, ni price_change_percentage,
+    ni les périodes m15/m30/h6 : ces champs doivent être None, pas planter."""
+    pool = parse_pool_list(SAMPLE_TRENDING_RESPONSE)[0]
+    assert pool.locked_liquidity_pct is None
+    assert pool.pool_fee_pct is None
+    assert pool.quote_token_price_usd is None
+    assert pool.price_change_pct_m5 is None
+    assert pool.price_change_pct_h24 is None
+    assert pool.volume_usd_m15 is None
+    assert pool.volume_usd_m30 is None
+    assert pool.volume_usd_h6 is None
+    assert pool.buys_m15 is None
+    assert pool.sells_m30 is None
+    assert pool.buyers_h6 is None
+    assert pool.sellers_h6 is None
+
+
+# Fixture calquée sur une vraie réponse de
+# GET /networks/solana/pools/multi/{addresses} (structure vérifiée le
+# 2026-09-21) : seul cet endpoint expose locked_liquidity_percentage et
+# pool_fee_percentage, absents de trending_pools/new_pools ci-dessus.
+SAMPLE_MULTI_POOLS_RESPONSE = {
+    "data": [
+        {
+            "id": "solana_Bd4wKg3xEBKJ4Xrw8skXMmJ4W65gk3x8yd7AovuBJisZ",
+            "type": "pool",
+            "attributes": {
+                "base_token_price_usd": "0.0003023082822739739",
+                "quote_token_price_usd": "186.42",
+                "address": "Bd4wKg3xEBKJ4Xrw8skXMmJ4W65gk3x8yd7AovuBJisZ",
+                "name": "PEPENOM / SOL",
+                "pool_created_at": "2026-09-11T00:55:05Z",
+                "fdv_usd": "181306.054267829",
+                "market_cap_usd": "181324.403234765",
+                "reserve_in_usd": "112004.5836",
+                "locked_liquidity_percentage": 100.0,
+                "pool_fee_percentage": 0.25,
+                "price_change_percentage": {
+                    "m5": "-0.119", "m15": "0.15", "m30": "0.964",
+                    "h1": "1.464", "h6": "3.482", "h24": "34.845",
+                },
+                "transactions": {
+                    "m5": {"buys": 4, "sells": 3, "buyers": 4, "sellers": 3},
+                    "m15": {"buys": 20, "sells": 4, "buyers": 20, "sellers": 4},
+                    "m30": {"buys": 114, "sells": 37, "buyers": 114, "sellers": 37},
+                    "h1": {"buys": 167, "sells": 57, "buyers": 165, "sellers": 56},
+                    "h6": {"buys": 721, "sells": 266, "buyers": 692, "sellers": 247},
+                    "h24": {"buys": 12303, "sells": 4100, "buyers": 11819, "sellers": 3792},
+                },
+                "volume_usd": {
+                    "m5": "109.37", "m15": "259.65", "m30": "3621.21",
+                    "h1": "4914.09", "h6": "15732.48", "h24": "295643.49",
+                },
+            },
+            "relationships": {
+                "base_token": {"data": {"id": "solana_EpEfnZxQyiBXppSKi8sncc8w4corn1UJbF9G91fQpump", "type": "token"}},
+                "quote_token": {"data": {"id": "solana_So11111111111111111111111111111111111111112", "type": "token"}},
+                "dex": {"data": {"id": "pumpswap", "type": "dex"}},
+            },
+        }
+    ],
+    "included": [],
+}
+
+
+def test_parse_pool_list_multi_pools_exposes_liquidity_and_fee():
+    pool = parse_pool_list(SAMPLE_MULTI_POOLS_RESPONSE)[0]
+    assert pool.locked_liquidity_pct == 100.0
+    assert pool.pool_fee_pct == 0.25
+    assert pool.quote_token_price_usd == 186.42
+
+
+def test_parse_pool_list_multi_pools_all_periods_present():
+    pool = parse_pool_list(SAMPLE_MULTI_POOLS_RESPONSE)[0]
+    assert pool.volume_usd_m15 == 259.65
+    assert pool.volume_usd_m30 == 3621.21
+    assert pool.volume_usd_h6 == 15732.48
+    assert pool.buys_m15 == 20
+    assert pool.sells_m30 == 37
+    assert pool.buyers_h6 == 692
+    assert pool.sellers_h6 == 247
+    assert pool.price_change_pct_m5 == -0.119
+    assert pool.price_change_pct_h24 == 34.845
+
+
 def test_parse_pool_list_missing_included_is_defensive():
     minimal = {"data": SAMPLE_TRENDING_RESPONSE["data"]}  # pas de bloc "included"
     pools = parse_pool_list(minimal)

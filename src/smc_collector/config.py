@@ -50,6 +50,27 @@ class OhlcvBackfillConfig:
 
 
 @dataclass(frozen=True)
+class TokenInfoConfig:
+    max_calls_per_run: int
+    max_total_run_seconds: float
+    max_failures_before_unavailable: int
+    max_raw_json_bytes: int
+
+
+@dataclass(frozen=True)
+class RugcheckConfig:
+    base_url: str
+    calls_per_minute: float
+    max_calls_per_run: int
+    request_timeout_seconds: float
+    max_retries: int
+    backoff_base_seconds: float
+    backoff_max_seconds: float
+    max_total_run_seconds: float
+    max_failures_before_unavailable: int
+
+
+@dataclass(frozen=True)
 class StorageConfig:
     raw_dir: Path
     cache_dir: Path
@@ -61,6 +82,8 @@ class CollectionConfig:
     api: ApiConfig
     univers: UniversConfig
     ohlcv_backfill: OhlcvBackfillConfig
+    token_info: TokenInfoConfig
+    rugcheck: RugcheckConfig
     storage: StorageConfig
     source_path: Path
 
@@ -79,6 +102,30 @@ class CollectionConfig:
     @property
     def runs_log_dir(self) -> Path:
         return self.storage.log_dir / "runs"
+
+    @property
+    def trending_ranks_dir(self) -> Path:
+        return self.storage.raw_dir / "trending_ranks"
+
+    @property
+    def new_pool_ranks_dir(self) -> Path:
+        return self.storage.raw_dir / "new_pool_ranks"
+
+    @property
+    def token_info_dir(self) -> Path:
+        return self.storage.raw_dir / "token_info"
+
+    @property
+    def token_info_status_dir(self) -> Path:
+        return self.storage.raw_dir / "token_info_status"
+
+    @property
+    def rugcheck_info_dir(self) -> Path:
+        return self.storage.raw_dir / "rugcheck_info"
+
+    @property
+    def rugcheck_status_dir(self) -> Path:
+        return self.storage.raw_dir / "rugcheck_status"
 
 
 def load_config(path: str | Path, base_dir: str | Path | None = None) -> CollectionConfig:
@@ -100,6 +147,8 @@ def load_config(path: str | Path, base_dir: str | Path | None = None) -> Collect
         api_raw = raw["api"]
         univers_raw = raw["univers"]
         ohlcv_raw = raw["ohlcv_backfill"]
+        token_info_raw = raw["token_info"]
+        rugcheck_raw = raw["rugcheck"]
         storage_raw = raw["storage"]
     except KeyError as exc:
         raise ValueError(f"Section manquante dans {path} : {exc}") from exc
@@ -136,6 +185,25 @@ def load_config(path: str | Path, base_dir: str | Path | None = None) -> Collect
         max_candles_per_pool=int(ohlcv_raw["max_candles_per_pool"]),
     )
 
+    token_info = TokenInfoConfig(
+        max_calls_per_run=int(token_info_raw["max_calls_per_run"]),
+        max_total_run_seconds=float(token_info_raw["max_total_run_seconds"]),
+        max_failures_before_unavailable=int(token_info_raw["max_failures_before_unavailable"]),
+        max_raw_json_bytes=int(token_info_raw["max_raw_json_bytes"]),
+    )
+
+    rugcheck = RugcheckConfig(
+        base_url=rugcheck_raw["base_url"].rstrip("/"),
+        calls_per_minute=float(rugcheck_raw["calls_per_minute"]),
+        max_calls_per_run=int(rugcheck_raw["max_calls_per_run"]),
+        request_timeout_seconds=float(rugcheck_raw["request_timeout_seconds"]),
+        max_retries=int(rugcheck_raw["max_retries"]),
+        backoff_base_seconds=float(rugcheck_raw["backoff_base_seconds"]),
+        backoff_max_seconds=float(rugcheck_raw["backoff_max_seconds"]),
+        max_total_run_seconds=float(rugcheck_raw["max_total_run_seconds"]),
+        max_failures_before_unavailable=int(rugcheck_raw["max_failures_before_unavailable"]),
+    )
+
     storage = StorageConfig(
         raw_dir=base_dir / storage_raw["raw_dir"],
         cache_dir=base_dir / storage_raw["cache_dir"],
@@ -146,6 +214,8 @@ def load_config(path: str | Path, base_dir: str | Path | None = None) -> Collect
         api=api,
         univers=univers,
         ohlcv_backfill=ohlcv_backfill,
+        token_info=token_info,
+        rugcheck=rugcheck,
         storage=storage,
         source_path=path,
     )

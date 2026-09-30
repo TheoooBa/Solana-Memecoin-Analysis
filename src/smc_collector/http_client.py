@@ -35,7 +35,16 @@ class CallBudgetExceeded(Exception):
 
 
 class GeckoTerminalApiError(Exception):
-    """Levée quand un appel échoue définitivement après toutes les reprises."""
+    """Levée quand un appel échoue définitivement après toutes les reprises.
+
+    `status_code` (None si l'échec est une exception réseau plutôt qu'une
+    réponse HTTP) permet aux appelants de distinguer par exemple un 401/403
+    (l'endpoint est peut-être devenu payant) d'un 404 ordinaire.
+    """
+
+    def __init__(self, message: str, status_code: int | None = None) -> None:
+        super().__init__(message)
+        self.status_code = status_code
 
 
 @dataclass
@@ -122,6 +131,15 @@ class GeckoTerminalClient:
         params = {"page": page, "include": "base_token,quote_token,dex"}
         return self._get(path, params, endpoint_name="new_pools")
 
+    def get_token_info(self, token_address: str) -> dict[str, Any]:
+        """Score de confiance, concentration des détenteurs, autorités mint/
+        freeze, part développeur, indicateur honeypot. Gratuit sur cette
+        surface le 2026-09-21, mais documenté comme payant sur la nouvelle
+        API CoinGecko — peut donc se fermer sans préavis (voir token_info.py
+        pour la détection et l'arrêt propre si ça arrive)."""
+        path = f"/networks/{self.network}/tokens/{token_address}/info"
+        return self._get(path, {}, endpoint_name="token_info")
+
     def get_multi_pools(self, addresses: list[str]) -> dict[str, Any]:
         if not addresses:
             return {"data": [], "included": []}
@@ -200,7 +218,8 @@ class GeckoTerminalClient:
                     continue
                 raise GeckoTerminalApiError(
                     f"{endpoint_name}: échec définitif après {attempt} tentatives "
-                    f"(HTTP {response.status_code})"
+                    f"(HTTP {response.status_code})",
+                    status_code=response.status_code,
                 )
 
             # Erreur non transitoire (4xx hors 429) : inutile de réessayer.
@@ -208,7 +227,8 @@ class GeckoTerminalClient:
                 CallRecord(endpoint_name, url, response.status_code, attempt, duration, None)
             )
             raise GeckoTerminalApiError(
-                f"{endpoint_name}: HTTP {response.status_code} non transitoire : {response.text[:300]}"
+                f"{endpoint_name}: HTTP {response.status_code} non transitoire : {response.text[:300]}",
+                status_code=response.status_code,
             )
 
         raise GeckoTerminalApiError(
