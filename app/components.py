@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 import pandas as pd
 import streamlit as st
 
-from db import db_exists, query
+from db import db_exists, ensure_fresh_database, query
 
 CSS = """
 <style>
@@ -73,6 +73,7 @@ def render_health_sidebar() -> None:
     justement un indicateur de fraîcheur, il doit refléter un vrai retard s'il
     y en a un, pas le masquer.
     """
+    ensure_fresh_database()
     st.sidebar.markdown("**Santé du collecteur**")
     if not db_exists():
         st.sidebar.markdown(badge("Base introuvable", "red"), unsafe_allow_html=True)

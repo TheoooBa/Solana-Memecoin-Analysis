@@ -222,11 +222,18 @@ vérité).
   aucune règle fabriquée n'y apparaît.
 - **Réseaux** : état vide assumé (pas de scraping X/Telegram par conception).
 
-Déploiement prévu sur Streamlit Community Cloud, accès restreint. En local,
-la base peut être vide ou incomplète pour les colonnes `token_info`/
-`rugcheck_info` tant que la collecte enrichie (voir plus haut) n'a pas encore
-tourné en production — l'app le signale plutôt que d'afficher des valeurs
-inventées.
+Déployé sur Streamlit Community Cloud, accès restreint (voir
+[docs/guide_deploiement_dashboard.md](docs/guide_deploiement_dashboard.md)).
+
+**Auto-synchronisation au démarrage** : Streamlit Community Cloud ne clone
+que la branche `main`, jamais `data` (où vivent les vrais CSV) — sans rien de
+plus, l'app déployée n'aurait donc aucune donnée. `app/db.py` clone la
+branche `data` (dépôt public, lecture seule, aucune authentification, aucun
+appel à GeckoTerminal ni RugCheck) dans un dossier temporaire au premier
+chargement, reconstruit `data/smc.sqlite3`, et rafraîchit toutes les 15
+minutes tant que l'app reste active. En local avec `data/` déjà rempli à la
+main, ce comportement peut être désactivé (`SMC_SKIP_SYNC=1`) pour travailler
+hors-ligne sur un jeu de données figé.
 
 ## Rapport : historique OHLCV pour des pools morts
 
