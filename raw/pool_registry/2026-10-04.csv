@@ -1,0 +1,5 @@
+pool_address,network,dex,group,discovered_at_utc,pool_created_at,reason,sampling_probability,tracking_until_utc,base_token_address,schema_version
+EUTHs32EKg9zkQgovthoEYQuWX4sMxiHXEavm1NNL1mF,solana,Pump.fun,random_new,2026-10-04T00:08:49.019131+00:00,2026-10-04T00:07:48Z,new_pools_sampled_p=0.25,0.25,2026-10-06T00:08:49.019131+00:00,2zTSmzdSFYgBeeR33K6obn8cKtcy7TvCnAfWeJ5Rpump,2
+5tienhRaYUbD83X4Liw3BQVGpcJgZXuhoeXWjNdLLpK2,solana,Pump.fun,random_new,2026-10-04T00:08:49.019131+00:00,2026-10-04T00:07:43Z,new_pools_sampled_p=0.25,0.25,2026-10-06T00:08:49.019131+00:00,Dt9nDRbapdirCxeRvg38nudHGoZ79RNkfWCtpnd6BmC8,2
+9U9FAdaE7N3dMZFq6fjTogErDQyGi8e7SBmPcZbUy5bs,solana,Pump.fun,random_new,2026-10-04T00:08:49.019131+00:00,2026-10-04T00:07:29Z,new_pools_sampled_p=0.25,0.25,2026-10-06T00:08:49.019131+00:00,FBkHm65PTw9CAFtTCjSMRCxCaN27ejZBv7RKutgfawJZ,2
+FMLpdQr1bDXb7xNw6yQm5GHaGXjzwiVAL8NpvTEmcWVu,solana,Meteora DAMM V2,random_new,2026-10-04T00:08:49.019131+00:00,2026-10-04T00:07:26Z,new_pools_sampled_p=0.25,0.25,2026-10-06T00:08:49.019131+00:00,AWCeztKaxugQWLaP3Hr8i8BUverTzr1sFRmcwAibBshV,2
