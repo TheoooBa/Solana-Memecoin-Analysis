@@ -2,3 +2,7 @@ pool_address,event_at_utc,event_type,detail,schema_version
 Fs9wGdtdeC5xUF8cqge4Zbds7DQCjoTtoBRUH7xmeN7M,2026-10-08T15:27:05.903285+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
 Fs9wGdtdeC5xUF8cqge4Zbds7DQCjoTtoBRUH7xmeN7M,2026-10-08T15:36:09.708087+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
 J4Dfk2YAiqMRD6iGFM3CUd1jX5jyha6ecQWNL2grJHqo,2026-10-08T15:36:31.304591+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
+Fs9wGdtdeC5xUF8cqge4Zbds7DQCjoTtoBRUH7xmeN7M,2026-10-08T15:46:58.557555+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
+Fs9wGdtdeC5xUF8cqge4Zbds7DQCjoTtoBRUH7xmeN7M,2026-10-08T15:46:58.557555+00:00,unavailable,3 échecs cumulés,2
+J4Dfk2YAiqMRD6iGFM3CUd1jX5jyha6ecQWNL2grJHqo,2026-10-08T15:47:05.853933+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
+AEaL3mxBg75eN79R5UKKfv4pV7hhx2YiRwqhwfVmiE4f,2026-10-08T15:47:28.283855+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
