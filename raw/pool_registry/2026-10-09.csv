@@ -1,0 +1,6 @@
+pool_address,network,dex,group,discovered_at_utc,pool_created_at,reason,sampling_probability,tracking_until_utc,base_token_address,schema_version
+9CKXKvE1Rj93yVErbJ7k3NsbABzQiZ6ApnKJ1sgdQfd9,solana,Pump.fun,random_new,2026-10-09T00:06:02.958716+00:00,2026-10-09T00:05:51Z,new_pools_sampled_p=0.25,0.25,2026-10-11T00:06:02.958716+00:00,6b2BMAUXwPfX2anxsHe7BnazbsQ8s1R9QtbncavbBPCe,2
+A2tg9vpKid9drvkL9oGkw8ShNWRvfc4B8VbNLf1bdpyz,solana,Pump.fun,random_new,2026-10-09T00:06:02.958716+00:00,2026-10-09T00:05:45Z,new_pools_sampled_p=0.25,0.25,2026-10-11T00:06:02.958716+00:00,51G7BjmzttJGfvYE3FD8ocMvkA479sa93emqzApKpump,2
+DXNxSyWZj4oRhERa5ouxqKgStF7SrjAMomc3Cg6ycDF5,solana,Pump.fun,random_new,2026-10-09T00:06:02.958716+00:00,2026-10-09T00:05:41Z,new_pools_sampled_p=0.25,0.25,2026-10-11T00:06:02.958716+00:00,7iwkLZPq7dkNW71BNiXPzNJYyexm7SB1uLK69Lz7pump,2
+FozDbzM1E2JykzqdRkBKKtPPPzZ1Dk9v3Y7HozF9SyKs,solana,Pump.fun,random_new,2026-10-09T00:06:02.958716+00:00,2026-10-09T00:05:32Z,new_pools_sampled_p=0.25,0.25,2026-10-11T00:06:02.958716+00:00,APRpndx64yhiCwRVeL4SXUVDFeTvYCnTBi633mgKpump,2
+8h6yJwpmU2BYdoQvuTJA3on9iSTUTefBcJhckFMoWKef,solana,Pump.fun,random_new,2026-10-09T00:06:02.958716+00:00,2026-10-09T00:05:24Z,new_pools_sampled_p=0.25,0.25,2026-10-11T00:06:02.958716+00:00,8Qm8XaYijXPuMDQCkqTuLE75GFhYyZAGpr2h9HBrpump,2
