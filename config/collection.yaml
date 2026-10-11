@@ -27,7 +27,22 @@ api:
 
   # Coupe-circuit dur : une exécution ne dépassera jamais ce nombre d'appels HTTP
   # (retries compris), quelle que soit la taille de l'univers suivi.
-  max_calls_per_run: 60
+  #
+  # Relevé de 60 à 80 le 2026-10-11 : mesuré en production, l'univers actif
+  # (fenêtre 48h) est passé de 338 à ~1570 pools en 10 jours — conséquence du
+  # correctif de cadence externe (plus de runs/jour = plus de pages
+  # "nouveaux pools" consultées = plus de témoins échantillonnés sur la même
+  # fenêtre). À 60, le budget était épuisé par le seul instantané de
+  # l'univers (~53 appels) sur 88% des runs, sautant quasi systématiquement
+  # token_info. 80 reste modéré : suffisant pour l'instantané + une partie du
+  # backfill/token_info sans faire grimper la durée d'un run au-delà de ce
+  # que l'intervalle cron-job.org peut absorber (voir
+  # docs/guide_cron_externe.md). Si l'univers actif continue de grossir, ce
+  # chiffre redeviendra insuffisant — solution durable : réduire
+  # univers.new_pools_sample_probability ou tracking_duration_hours (choix
+  # qui touche la puissance statistique du groupe témoin, pas qu'un réglage
+  # d'ingénierie — à décider, pas à changer silencieusement).
+  max_calls_per_run: 80
 
   request_timeout_seconds: 15
   max_retries: 5

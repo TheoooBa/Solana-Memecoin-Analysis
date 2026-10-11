@@ -43,6 +43,11 @@ collectes (documentation officielle GitHub : les événements `schedule`
 [docs/guide_cron_externe.md](docs/guide_cron_externe.md) pour la mise en
 place d'un minuteur externe qui contourne ce problème.
 
+**Recalibrage (2026-10-11)** : un run prend maintenant ~8-10 min (univers
+actif suivi passé à ~1570 pools), plus long que l'intervalle de 5 min —
+l'intervalle externe passe à ~12 min et `api.max_calls_per_run` de 60 à 80
+(voir la mise à jour dans `docs/guide_cron_externe.md`).
+
 ## Univers suivi et biais
 
 Pas de filtre par plateforme de lancement (pump.fun, etc.) : tous les pools

@@ -101,6 +101,30 @@ jusqu'ici.
 - **cron-job.org reste un service tiers gratuit** : pas de garantie contractuelle
   de disponibilité. S'il tombe, on retombe sur le `schedule:` natif (donc
   jamais pire qu'aujourd'hui, juste pas mieux temporairement).
-- **Le budget d'appels par run (60) et le débit (8/min) n'ont pas changé** :
-  passer à des runs toutes les 5 minutes ne change rien à ces limites, juste
-  à la fréquence à laquelle on les sollicite.
+- **Le budget d'appels par run (80 depuis le 2026-10-11, voir ci-dessous) et
+  le débit (8/min) n'ont pas changé** : la fréquence des runs ne change rien
+  à ces limites, juste à la fréquence à laquelle on les sollicite.
+
+## Mise à jour 2026-10-11 : recalibrage de l'intervalle à ~12 minutes
+
+Vérifié sur les 2 039 premiers runs : le déclencheur à 5 minutes fonctionne
+bien (il se déclenche vraiment toutes les 5 min), mais la collecte elle-même
+en prenait déjà ~8 min en moyenne avant de répondre — chaque run se mettait
+donc en file derrière le précédent (`concurrency: cancel-in-progress: false`)
+plutôt que de se déclencher réellement toutes les 5 min. Cadence réelle
+observée : ~9 min, pas 5. Cause : l'univers actif suivi (fenêtre 48h) est
+passé de 338 à ~1570 pools en 10 jours — effet secondaire du correctif
+ci-dessus (plus de runs/jour = plus de pages "nouveaux pools" consultées =
+plus de témoins échantillonnés sur la même fenêtre). `api.max_calls_per_run`
+est passé de 60 à 80 en conséquence (voir `config/collection.yaml`), ce qui
+allonge un peu plus chaque run (~10,4 min estimés à débit inchangé).
+
+**À faire toi-même sur cron-job.org** : ouvre le job existant
+("Solana Memecoin Analysis - collecte") → modifie le **Schedule** de
+"toutes les 5 minutes" à **toutes les 12 minutes** (marge raisonnable
+au-dessus des ~10,4 min estimés) → sauvegarde. Aucune autre valeur du job
+(URL, headers, body) ne change.
+
+Si tu observes encore des runs qui se mettent en file après ça (écarts
+irréguliers dans `logs/runs/`), c'est le signe que 12 min est encore trop
+court — passe à 15 et on réévaluera.
