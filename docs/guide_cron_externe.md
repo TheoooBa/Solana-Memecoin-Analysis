@@ -105,7 +105,7 @@ jusqu'ici.
   le débit (8/min) n'ont pas changé** : la fréquence des runs ne change rien
   à ces limites, juste à la fréquence à laquelle on les sollicite.
 
-## Mise à jour 2026-10-11 : recalibrage de l'intervalle à ~12 minutes
+## Mise à jour 2026-10-11 : recalibrage de l'intervalle à 15 minutes
 
 Vérifié sur les 2 039 premiers runs : le déclencheur à 5 minutes fonctionne
 bien (il se déclenche vraiment toutes les 5 min), mais la collecte elle-même
@@ -116,15 +116,19 @@ observée : ~9 min, pas 5. Cause : l'univers actif suivi (fenêtre 48h) est
 passé de 338 à ~1570 pools en 10 jours — effet secondaire du correctif
 ci-dessus (plus de runs/jour = plus de pages "nouveaux pools" consultées =
 plus de témoins échantillonnés sur la même fenêtre). `api.max_calls_per_run`
-est passé de 60 à 80 en conséquence (voir `config/collection.yaml`), ce qui
-allonge un peu plus chaque run (~10,4 min estimés à débit inchangé).
+est passé de 60 à 80 en conséquence (voir `config/collection.yaml`).
 
-**À faire toi-même sur cron-job.org** : ouvre le job existant
-("Solana Memecoin Analysis - collecte") → modifie le **Schedule** de
-"toutes les 5 minutes" à **toutes les 12 minutes** (marge raisonnable
-au-dessus des ~10,4 min estimés) → sauvegarde. Aucune autre valeur du job
-(URL, headers, body) ne change.
+**Premier essai à 10 minutes (insuffisant, vérifié)** : sur 24 runs mesurés
+après le passage à 80 appels/run, `calls_made` valait 80/80 à chaque fois
+(le budget reste systématiquement le facteur limitant), la durée d'un run
+était de ~10,35 min en moyenne — déjà plus longue que l'intervalle de 10
+min — et l'écart réel observé s'est stabilisé à ~11,6 min, pas 10. Même
+mécanique qu'avec les 5 minutes d'origine : dès que la durée d'un run
+dépasse l'intervalle de déclenchement, ça se remet en file.
 
-Si tu observes encore des runs qui se mettent en file après ça (écarts
-irréguliers dans `logs/runs/`), c'est le signe que 12 min est encore trop
-court — passe à 15 et on réévaluera.
+**Réglage actuel : 15 minutes**, qui laisse ~3,4 min de marge réelle
+au-dessus du temps total d'un run observé (~11,6 min, mise en place
+GitHub Actions comprise). Si tu observes encore des écarts irréguliers
+dans `logs/runs/` après ce changement, c'est que l'univers actif a encore
+grossi depuis — revoir `api.max_calls_per_run` ou les paramètres
+`univers.*` plutôt que l'intervalle lui-même, qui a déjà de la marge.
