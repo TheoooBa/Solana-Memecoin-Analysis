@@ -1,8 +1,22 @@
-# Trading squad : 4 agents Claude en groupchat, en paper trading
+# Trading Dream Squad : 4 agents Claude en groupchat, en paper trading
 
 Un scout, un news bot, un chart bot et un skeptic se passent la parole sur chaque actif qui bouge fort. Le skeptic tranche buy, wait ou skip. Un desk en code (pas un LLM) applique les règles de risque dures. Tout est simulé : aucun ordre réel n'existe dans ce projet, et il ne faut pas en ajouter avant d'avoir des mois de résultats mesurés.
 
 Le vrai sujet n'est pas de savoir si ça fait de beaux messages, mais si ça fait mieux que le hasard. Tout est construit pour répondre à ça : chaque plan est journalisé, rejoué sur les vraies bougies qui suivent, et comparé à une règle bête sans LLM qui tourne sur les mêmes données.
+
+## Lancer pour plusieurs semaines (Mac)
+
+```
+cd trading_dream_squad
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+echo 'export ANTHROPIC_API_KEY=sk-ant-...' > ~/.trading_dream_squad.env && chmod 600 ~/.trading_dream_squad.env
+.venv/bin/python run.py --market crypto --once        # premier cycle réel, à regarder
+./deploy/install.sh                                   # crypto 24/7 + actions aux heures de bourse
+.venv/bin/python status.py                            # santé : dernier cycle, erreurs, coût
+.venv/bin/python evaluate.py --market crypto          # résultats (à lire après 3-4 semaines)
+```
+
+launchd relance les boucles après un plantage ou un redémarrage, `caffeinate` empêche la veille tant qu'elles tournent. Le Mac doit rester allumé et branché, et ne pas être en veille couvercle fermé. Si le Mac dort quelques heures, rien n'est faussé : les trades sont simulés a posteriori sur les vraies bougies, on perd seulement des plans pendant l'interruption. Arrêt : `./deploy/uninstall.sh`. Logs dans `logs/`.
 
 ## Installation
 
@@ -57,7 +71,7 @@ Si un agent répond n'importe quoi, le système échoue du côté prudent : pas 
 
 La variante claude fait tourner les quatre agents LLM. La variante rules est une règle de 20 lignes sans LLM (achat sur repli d'un demi ATR après une hausse, validation si le volume confirme). Elle tourne à côté, gratuitement, sur les mêmes bougies. Si Claude ne la bat pas nettement, l'escouade ne sert à rien, et c'est une information utile. Désactivable avec `--no-baseline`.
 
-Par défaut les trois premiers bots utilisent `claude-haiku-5-5` et le skeptic `claude-sonnet-5-5`, parce qu'un skeptic du même modèle que ceux qu'il challenge partage leurs angles morts. Modifiable avec `SQUAD_MODEL` et `SQUAD_SKEPTIC_MODEL`.
+Par défaut les trois premiers bots utilisent `claude-haiku-4-5-20251001` et le skeptic `claude-sonnet-5-5`, parce qu'un skeptic du même modèle que ceux qu'il challenge partage leurs angles morts. Modifiable avec `SQUAD_MODEL` et `SQUAD_SKEPTIC_MODEL`.
 
 ## Lire les résultats
 

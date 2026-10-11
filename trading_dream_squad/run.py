@@ -8,6 +8,7 @@ Exemples :
 from __future__ import annotations
 
 import argparse
+import fcntl
 import os
 import sys
 import time
@@ -25,7 +26,7 @@ def build_variants(args):
         return [Variant("rules", StubLLM(), StubLLM())]
     if not os.environ.get("ANTHROPIC_API_KEY"):
         sys.exit("ANTHROPIC_API_KEY absente. Exporte-la, ou utilise --dry-run pour tester sans LLM.")
-    fast = LLM(os.environ.get("SQUAD_MODEL", "claude-haiku-5-5"))
+    fast = LLM(os.environ.get("SQUAD_MODEL", "claude-haiku-4-5-20251001"))
     skeptic = LLM(os.environ.get("SQUAD_SKEPTIC_MODEL", "claude-sonnet-5-5"))
     variants = [Variant("claude", fast, skeptic)]
     if not args.no_baseline:
@@ -53,6 +54,11 @@ def main():
     db_path = args.db or os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", f"journal_{args.market}.sqlite")
     if args.fresh and os.path.exists(db_path):
         os.remove(db_path)
+    lock = open(db_path + ".lock", "w")  # une seule instance par journal (sinon doublons de plans)
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        sys.exit(f"Une autre instance utilise déjà {db_path}.")
     journal = Journal(db_path)
     provider = make_provider(args.market, cfg)
     squad = Squad(provider, cfg, journal, build_variants(args), lang=args.lang)
@@ -83,7 +89,8 @@ def main():
         try:
             squad.run_cycle(now)
         except Exception:
-            traceback.print_exc()  # on journalise et on continue : la boucle doit survivre aux pannes réseau
+            traceback.print_exc()
+            journal.note_cycle(journal.last_cycles(1)[0]["id"], "CYCLE EN ERREUR: " + traceback.format_exc()[-300:])  # on journalise et on continue : la boucle doit survivre aux pannes réseau
         if args.once:
             return
         time.sleep(max(30, interval - (int(time.time()) % interval)))

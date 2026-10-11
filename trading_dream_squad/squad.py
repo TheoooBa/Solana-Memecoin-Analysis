@@ -29,6 +29,7 @@ class Squad:
         self.provider, self.cfg, self.journal = provider, cfg, journal
         self.variants, self.lang, self.say = variants, lang, say
         self.candles = {}
+        self.errors = []
         self._closed = {}  # (variant, trade_id) -> simulation finale
 
     def _usage(self):
@@ -87,10 +88,12 @@ class Squad:
         top = [f for f in ranked if f["score"] >= self.cfg.min_score]
         self.say(f"{n_uni} actifs scannés, {len(top)} au-dessus du seuil ({self.cfg.min_score})")
         made = 0
+        self.errors = []
         for v in self.variants:
             made += self.run_variant(v, now, top, cyc)
         u1 = self._usage()
-        self.journal.end_cycle(cyc, n_uni, len(top), u1[0] - u0[0], u1[1] - u0[1], u1[2] - u0[2])
+        self.journal.end_cycle(cyc, n_uni, len(top), u1[0] - u0[0], u1[1] - u0[1], u1[2] - u0[2],
+                               note="; ".join(self.errors))
         return {"cycle": cyc, "scanned": n_uni, "above_threshold": len(top), "plans": made}
 
     def run_variant(self, v: Variant, now: int, top: list, cyc: int) -> int:
@@ -111,6 +114,7 @@ class Squad:
                 n += 1
             except Exception as e:  # une panne sur un actif ne doit pas arrêter la boucle 24/7
                 self.say(f"  ! {pick['symbol']}: {type(e).__name__}: {e}")
+                self.errors.append(f"{v.name}/{pick['symbol']}: {type(e).__name__}")
         return n
 
     def run_candidate(self, v: Variant, f: dict, why: str, open_pos: list, now: int, cyc: int):

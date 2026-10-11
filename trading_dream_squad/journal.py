@@ -34,6 +34,7 @@ class Journal:
         self.path = path
         self.db = sqlite3.connect(path)
         self.db.row_factory = sqlite3.Row
+        self.db.execute("PRAGMA journal_mode=WAL")
         self.db.executescript(SCHEMA)
         self.db.commit()
 
@@ -78,6 +79,13 @@ class Journal:
         rows = self.db.execute(
             "SELECT DISTINCT symbol FROM trades WHERE variant=? AND ts>=?", (variant, since))
         return {r["symbol"] for r in rows}
+
+    def note_cycle(self, cycle_id: int, note: str):
+        self.db.execute("UPDATE cycles SET note=? WHERE id=?", (note[:500], cycle_id))
+        self.db.commit()
+
+    def last_cycles(self, n: int = 5):
+        return [dict(r) for r in self.db.execute("SELECT * FROM cycles ORDER BY id DESC LIMIT ?", (n,))]
 
     def calls_since(self, since: float) -> int:
         r = self.db.execute("SELECT COALESCE(SUM(calls), 0) AS n FROM cycles WHERE ts>=?", (since,)).fetchone()

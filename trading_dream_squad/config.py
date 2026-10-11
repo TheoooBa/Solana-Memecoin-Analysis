@@ -34,7 +34,7 @@ class MarketConfig:
 
 
 PRESETS = {
-    "crypto": MarketConfig(name="crypto", cycle_minutes=15, universe_size=30, min_quote_volume=30e6,
+    "crypto": MarketConfig(name="crypto", cycle_minutes=15, universe_size=40, min_quote_volume=10e6,
                            min_score=2.0, cost_bps=10.0, valid_hours=12.0, cooldown_hours=6.0),
     "stocks": MarketConfig(name="stocks", cycle_minutes=15, watchlist=STOCK_WATCHLIST,
                            min_score=1.8, cost_bps=3.0, valid_hours=8.0, cooldown_hours=8.0,
