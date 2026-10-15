@@ -121,3 +121,7 @@ AUZCCFFqqYjg385JD3J81tHXxDBvVwUJxhvAojsAuqrc,2026-10-15T08:42:06.209046+00:00,fe
 7YNsCebLwreBbgYLSVaqK7r2ZFEcQbKfYhg8ZrFVkMua,2026-10-15T08:56:36.446863+00:00,unavailable,3 échecs cumulés,2
 AUZCCFFqqYjg385JD3J81tHXxDBvVwUJxhvAojsAuqrc,2026-10-15T08:56:43.624958+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
 ADjvZPqzr1AZqNzBveLqDdo1n28VLPu64ACToaMsQaU8,2026-10-15T08:56:51.123506+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
+AUZCCFFqqYjg385JD3J81tHXxDBvVwUJxhvAojsAuqrc,2026-10-15T09:11:27.197082+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
+AUZCCFFqqYjg385JD3J81tHXxDBvVwUJxhvAojsAuqrc,2026-10-15T09:11:27.197082+00:00,unavailable,3 échecs cumulés,2
+ADjvZPqzr1AZqNzBveLqDdo1n28VLPu64ACToaMsQaU8,2026-10-15T09:11:34.412032+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
+Hne1YBAqwvatHXeG6c1QY8jLoP3Mp4yonrxDEThqyKPZ,2026-10-15T09:11:41.912145+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
