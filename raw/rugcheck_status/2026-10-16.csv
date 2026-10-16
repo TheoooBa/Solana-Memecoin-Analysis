@@ -1,2 +1,3 @@
 pool_address,event_at_utc,event_type,detail,schema_version
 EhLKDmXF9vi6Y3Yyas18v5CXModejNaVwkQJ515H4qNU,2026-10-16T00:26:39.253500+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
+4bd8wFaWZMb5i62pMAJwxCybAVFHnCjVnMnTRu9eT7Z8,2026-10-16T00:41:41.000775+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
