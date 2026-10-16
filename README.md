@@ -256,8 +256,39 @@ c'est encore vrai plusieurs semaines après la mort d'un pool.
 `config/collection.yaml` contient uniquement des réglages d'ingénierie
 (débit, budget d'appels, durée de suivi, graine et probabilité
 d'échantillonnage). Aucun seuil d'analyse n'y vit : les définitions comme "un
-démarrage", "un rug", une taille de trade, etc. viendront dans
-`config/analysis.yaml` à l'étape 3, avec leur propre mécanisme de gel.
+démarrage", "un rug", une taille de trade, etc. vivent dans
+`config/analysis.yaml`, avec leur propre mécanisme de gel (voir section
+ci-dessous).
+
+## Module d'analyse (étape 3)
+
+Voir [reports/analysis_design_2026-10-14.md](reports/analysis_design_2026-10-14.md)
+pour la conception complète (signal, horizons, coûts, test de permutation,
+registre). Résumé : le signal de référence est la découverte d'un pool
+témoin ; chaque règle (`config/analysis.yaml`) est testée au sein du groupe
+témoin uniquement (jamais tendance vs témoin — tendance présuppose déjà un
+succès), par un test de permutation par bloc de jour, avec un coût
+forfaitaire de 3% appliqué au rendement brut.
+
+```bash
+# Gèle config/analysis.yaml : enregistre son hash et l'horodatage. Toute
+# modification du fichier après ça invalide l'évaluation tant qu'il n'est
+# pas regelé explicitement.
+PYTHONPATH=src python -m smc_collector.cli analyze-freeze
+
+# Évalue chaque règle gelée contre les pools témoins découverts après le
+# gel (jamais avant — voir la section "mécanisme de gel" du rapport).
+# Ajoute les résultats à analysis/registre_regles.csv, jamais tronqué.
+PYTHONPATH=src python -m smc_collector.cli analyze-run
+```
+
+**Limite de données assumée** : seuls ~25% des pools témoins ont un
+instantané de prix dans l'heure suivant leur découverte (le reste attend
+souvent 12h+, l'univers actif suivi dépassant le budget d'appels d'un
+run) — ces pools-là sont exclus de l'analyse plutôt que d'utiliser un prix
+d'entrée trop tardif pour représenter la découverte. Le volume restant
+(milliers d'événements) reste largement suffisant pour les seuils minimums
+définis, mais ce n'est pas la totalité de l'univers suivi.
 
 ## Hors périmètre
 
@@ -270,8 +301,8 @@ Telegram, choix des seuils d'analyse à la place de l'utilisateur.
 1. ~~Collecte, stockage, journalisation, tests, démonstration locale~~
 2. ~~Workflow GitHub Actions (collecte toutes les 5 minutes) + guide de mise en place~~,
    ~~schéma enrichi + détection anti-honeypot réelle (RugCheck.xyz)~~ (cette étape)
-3. Une fois plusieurs semaines de données réunies : module d'analyse,
-   simulateur, gel de configuration
+3. ~~Module d'analyse : règles, test de permutation, registre~~ — codé et
+   testé, en attente du gel officiel (voir section "Module d'analyse")
 4. ~~Première version du tableau de bord (Streamlit, lecture seule)~~ —
    reste à faire : déploiement sur Streamlit Community Cloud (accès
    restreint), et la page Analyse une fois l'étape 3 commencée

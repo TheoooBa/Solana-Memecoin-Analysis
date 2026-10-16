@@ -5,12 +5,18 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from .build_db import build_database
 from .collect import run_collect
 from .config import load_config
 from .diagnostics import run_diagnose_dead_pools
+
+from smc_analysis.config import load_analysis_config
+from smc_analysis.data import load_witness_pool_records
+from smc_analysis.evaluate import append_results_csv, run_analysis
+from smc_analysis.freeze import FreezeMismatchError, freeze, verify_freeze
 
 
 def _configure_logging(verbose: bool) -> None:
@@ -38,6 +44,19 @@ def main(argv: list[str] | None = None) -> int:
     diag_parser.add_argument("--page-count", type=int, default=3)
     diag_parser.add_argument("--max-candidates", type=int, default=10)
 
+    freeze_parser = sub.add_parser(
+        "analyze-freeze", help="Gèle config/analysis.yaml (voir reports/analysis_design_2026-10-14.md)."
+    )
+    freeze_parser.add_argument("--analysis-config", default="config/analysis.yaml")
+    freeze_parser.add_argument("--freeze-path", default="config/analysis_freeze.json")
+
+    run_parser = sub.add_parser(
+        "analyze-run", help="Évalue chaque règle gelée contre les données postérieures au gel."
+    )
+    run_parser.add_argument("--analysis-config", default="config/analysis.yaml")
+    run_parser.add_argument("--freeze-path", default="config/analysis_freeze.json")
+    run_parser.add_argument("--output", default="analysis/registre_regles.csv")
+
     args = parser.parse_args(argv)
     _configure_logging(args.verbose)
 
@@ -58,6 +77,31 @@ def main(argv: list[str] | None = None) -> int:
             config, Path(args.output), page_count=args.page_count, max_candidates=args.max_candidates
         )
         print(f"Rapport écrit : {output}")
+        return 0
+
+    if args.command == "analyze-freeze":
+        record = freeze(args.analysis_config, args.freeze_path)
+        print(f"Gelé : {args.analysis_config} (hash {record.config_hash[:12]}…) à {record.frozen_at_utc}")
+        return 0
+
+    if args.command == "analyze-run":
+        try:
+            freeze_record = verify_freeze(args.analysis_config, args.freeze_path)
+        except FreezeMismatchError as exc:
+            print(f"Erreur : {exc}", file=sys.stderr)
+            return 1
+
+        analysis_config = load_analysis_config(args.analysis_config)
+        frozen_at = datetime.fromisoformat(freeze_record.frozen_at_utc)
+        records = load_witness_pool_records(
+            config.registry_dir, config.snapshots_dir, config.rugcheck_info_dir, config.token_info_dir,
+            frozen_at_utc=frozen_at,
+        )
+        results = run_analysis(records, analysis_config, freeze_record.config_hash)
+        append_results_csv(results, args.output)
+        for r in results:
+            print(f"{r.rule_id} @ {r.horizon_hours}h : {r.verdict} (n={r.n_events_a}, p={r.p_value})")
+        print(f"Résultats ajoutés à {args.output}")
         return 0
 
     return 1
