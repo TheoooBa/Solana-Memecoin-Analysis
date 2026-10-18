@@ -1,0 +1,13 @@
+rule_id,horizon_hours,n_events_a,n_events_b,n_distinct_days,median_net_return_a,median_net_return_b,win_rate_a,win_rate_b,p_value,ci_low,ci_high,verdict,frozen_config_hash,evaluated_at_utc
+liquidite_verrouillee_90,1,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272326+00:00
+liquidite_verrouillee_90,6,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272542+00:00
+liquidite_verrouillee_90,24,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272545+00:00
+rugcheck_sain,1,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272547+00:00
+rugcheck_sain,6,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272549+00:00
+rugcheck_sain,24,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272551+00:00
+rugcheck_score_faible,1,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272553+00:00
+rugcheck_score_faible,6,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272555+00:00
+rugcheck_score_faible,24,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272556+00:00
+faible_concentration_top10,1,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272558+00:00
+faible_concentration_top10,6,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272560+00:00
+faible_concentration_top10,24,0,0,0,,,,,,,,donnees_insuffisantes,ebf40e9ecbccec1cdd97baf0e7b16c29c3a7ea6cfd7cdc0fb3d4e927e51ae01a,2026-10-18T14:47:24.272561+00:00
