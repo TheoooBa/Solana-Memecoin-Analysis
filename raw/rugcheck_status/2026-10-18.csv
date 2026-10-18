@@ -1,0 +1,2 @@
+pool_address,event_at_utc,event_type,detail,schema_version
+5LKdg6VYAF3cHaM5Kw1FuaXhui8umd6t8YqgZHxzzEuv,2026-10-18T05:12:00.553888+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""not found""}",2
