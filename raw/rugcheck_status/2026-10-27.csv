@@ -1,0 +1,2 @@
+pool_address,event_at_utc,event_type,detail,schema_version
+7j58drXLkiJ5icVuaMRnsG9GpoC59bJzuZx7XCA4a4vG,2026-10-27T09:12:30.054650+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""unable to generate report""}",2
