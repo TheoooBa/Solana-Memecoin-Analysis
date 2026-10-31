@@ -215,3 +215,7 @@ CsrCH3bCh5ADfymAuZ6nuoMNqGvMjsbmeFKk7FTmxWic,2026-10-31T13:43:09.914396+00:00,fe
 CsrCH3bCh5ADfymAuZ6nuoMNqGvMjsbmeFKk7FTmxWic,2026-10-31T13:57:31.811138+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""unable to generate report""}",2
 EwkTFPYc1XW86nVj2idyPYS1PY8MJkZbJw2PSV5qSjUK,2026-10-31T13:57:37.758816+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""unable to generate report""}",2
 4A13vcPAvPwZJuK89D1YT97SceKVpKPLyANoaBYJ3myW,2026-10-31T13:57:46.503639+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""unable to generate report""}",2
+CsrCH3bCh5ADfymAuZ6nuoMNqGvMjsbmeFKk7FTmxWic,2026-10-31T14:13:01.938115+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""unable to generate report""}",2
+CsrCH3bCh5ADfymAuZ6nuoMNqGvMjsbmeFKk7FTmxWic,2026-10-31T14:13:01.938115+00:00,unavailable,3 échecs cumulés,2
+EwkTFPYc1XW86nVj2idyPYS1PY8MJkZbJw2PSV5qSjUK,2026-10-31T14:13:07.987046+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""unable to generate report""}",2
+4A13vcPAvPwZJuK89D1YT97SceKVpKPLyANoaBYJ3myW,2026-10-31T14:13:15.742571+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""unable to generate report""}",2
