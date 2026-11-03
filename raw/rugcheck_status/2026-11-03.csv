@@ -1,0 +1,4 @@
+pool_address,event_at_utc,event_type,detail,schema_version
+4ovsAvyqnMZUFk4fXT7gGgyeJywpjJ29nTzkgVCV4AHo,2026-11-03T02:27:42.385192+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""unable to generate report""}",2
+4X5DDQLU5Q6avfyj3jWbb2x1XWNKnNtFcFZfYqirrqdN,2026-11-03T02:27:49.679770+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""unable to generate report""}",2
+8XZWjxsGgoUZq8RjrCiyxfYfDhy33ejEDEPeDX2KfwiC,2026-11-03T02:27:57.179915+00:00,fetch_failed,"rugcheck_report: HTTP 400 non transitoire : {""error"":""unable to generate report""}",2
