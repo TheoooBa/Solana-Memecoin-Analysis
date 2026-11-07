@@ -1,0 +1,4 @@
+pool_address,event_at_utc,event_type,detail,schema_version
+CqvMZmWDvEufa5rzkubidyR4zMDqDPoLjAtsW6wGsPMu,2026-11-07T00:03:00.869866+00:00,tracking_window_ended,Fenêtre de suivi (tracking_duration_hours) dépassée.,2
+G61aN9p4UTkVXPwTYfPeTeq8v6NjhU69kZ7LDoz78cqm,2026-11-07T00:03:00.869866+00:00,tracking_window_ended,Fenêtre de suivi (tracking_duration_hours) dépassée.,2
+7d72sYMXuHcztanAeKHVQuTZUkckqZdRm1waSX6rKhZa,2026-11-07T00:03:00.869866+00:00,tracking_window_ended,Fenêtre de suivi (tracking_duration_hours) dépassée.,2
