@@ -1,0 +1,9 @@
+pool_address,event_at_utc,event_type,detail,schema_version
+BQ2NHZEHvNayZD1gBYBsMNUFsC3xMzeXFGgF2wmdG6Yn,2026-11-09T15:55:40.258250+00:00,fetch_failed,"token_info: HTTP 403 non transitoire : <!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv=""Content-Type"" content=""text/html; charset=UTF-8"">
+  <meta http-equiv=""X-UA-Compatible"" content=""IE=Edge"">
+  <meta name=""robots"" content=""noindex,nofollow"">
+  <meta name=""viewport"" content=""width=device-width,in",2
