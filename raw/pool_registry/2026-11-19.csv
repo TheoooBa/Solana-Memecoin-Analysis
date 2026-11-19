@@ -1,0 +1,4 @@
+pool_address,network,dex,group,discovered_at_utc,pool_created_at,reason,sampling_probability,tracking_until_utc,base_token_address,schema_version
+FqutJFc9e9J8Szk1LzV7zRMMyjFz8kRrnUkyLWQj3p6N,solana,Pump.fun,random_new,2026-11-19T00:03:38.062539+00:00,2026-11-19T00:02:11Z,new_pools_sampled_p=0.25,0.25,2026-11-21T00:03:38.062539+00:00,9rGdCJQFUCn9J6KXX3v4P58pMJJtLAki5jMdhsAepump,2
+99CwK2HM4iabEmA5jgQRcRv2dvZEEe4kshTtNR5aKBp9,solana,Pump.fun,random_new,2026-11-19T00:03:38.062539+00:00,2026-11-19T00:01:55Z,new_pools_sampled_p=0.25,0.25,2026-11-21T00:03:38.062539+00:00,7Jgpkd7VFGoFwM3a2xVhzHehEEb9zxLxvCCroBrwVXvE,2
+4Cfpj2TDmgsSZ8ybdem9KUUrtpBYjjBthDdAfrzXAU3C,solana,Pump.fun,random_new,2026-11-19T00:03:38.062539+00:00,2026-11-19T00:01:43Z,new_pools_sampled_p=0.25,0.25,2026-11-21T00:03:38.062539+00:00,DkKrAnBDBit7sqzJ6z8KtGYxYdEjqc4BvyGogivzpump,2
