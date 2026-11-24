@@ -1,0 +1,5 @@
+pool_address,network,dex,group,discovered_at_utc,pool_created_at,reason,sampling_probability,tracking_until_utc,base_token_address,schema_version
+2RztVT2mkUb71QfHEWSaZrHehahA9kgaf2ib2sobAyQa,solana,Raydium Launchlab,random_new,2026-11-24T00:04:00.127650+00:00,2026-11-24T00:03:30Z,new_pools_sampled_p=0.25,0.25,2026-11-26T00:04:00.127650+00:00,uzXgLg7opuPnNjVVN9wV7DYt4tGeybstt3S9zCDRA3H,2
+BsjiXR4C9zehPYAqHxBRUQvojdByAoADJqM7n1WpUENY,solana,Pump.fun,random_new,2026-11-24T00:04:00.127650+00:00,2026-11-24T00:03:09Z,new_pools_sampled_p=0.25,0.25,2026-11-26T00:04:00.127650+00:00,CRzYQ2Vb8dGokWpb5Ar9sobBkSVKoCxeZvozRUDkpump,2
+EyP2vvfTwUQsHAjA3J81uiGiY9hESCcvYaAdkLkKawmB,solana,Pump.fun,random_new,2026-11-24T00:04:00.127650+00:00,2026-11-24T00:03:05Z,new_pools_sampled_p=0.25,0.25,2026-11-26T00:04:00.127650+00:00,FPaKDEXuyrG5HYtWW26pc2xLqN9yJ5FGkfQQSnqepump,2
+E7nkPCUEoqLVFUbhq5HLPDWFZGbEcFThazfTX2TZhkmJ,solana,Pump.fun,random_new,2026-11-24T00:04:00.127650+00:00,2026-11-24T00:03:02Z,new_pools_sampled_p=0.25,0.25,2026-11-26T00:04:00.127650+00:00,FdG9tL1gADnwyRw4KWx41gccxrt5bhUBz4BZaYmNpump,2
