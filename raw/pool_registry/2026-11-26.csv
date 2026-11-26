@@ -1,0 +1,7 @@
+pool_address,network,dex,group,discovered_at_utc,pool_created_at,reason,sampling_probability,tracking_until_utc,base_token_address,schema_version
+52E5FwyZ3SdJwBYAA1rWNBRqm2rxBW4k1sZxfJ2wrNTK,solana,Pump.fun,random_new,2026-11-26T00:33:55.779050+00:00,2026-11-26T00:33:08Z,new_pools_sampled_p=0.25,0.25,2026-11-28T00:33:55.779050+00:00,3uSkx5XTpQcjBqR6i34LghxLwLiVpEgp4vajcitDpump,2
+Fqt6BhKg2JHoCXFcTSVX8E5Gm1c3VVwN2tFyvJpntaeL,solana,Pump.fun,random_new,2026-11-26T00:33:55.779050+00:00,2026-11-26T00:33:02Z,new_pools_sampled_p=0.25,0.25,2026-11-28T00:33:55.779050+00:00,B8MK2FEPDaUApMnPq3kk4CQVtiXfnxrbPBe5Qy5jpump,2
+82Be3hSQeUMj1QymTJ313yoqzxStBfWsLtXqmPqaiyzq,solana,Raydium Launchlab,random_new,2026-11-26T00:33:55.779050+00:00,2026-11-26T00:32:58Z,new_pools_sampled_p=0.25,0.25,2026-11-28T00:33:55.779050+00:00,GDRBZho9oRCdEvcjuMBWiJYAFV1oLwKNvwux6r1JZoyF,2
+3bYVi64kJLYagk71Kn7S1pKtuk7gmeBjBRU9F7jQSqF2,solana,Pump.fun,random_new,2026-11-26T00:33:55.779050+00:00,2026-11-26T00:32:58Z,new_pools_sampled_p=0.25,0.25,2026-11-28T00:33:55.779050+00:00,DUVQEGeuLMgyXxnMRkkqTsaBA8JC4bjkEyBnKpFXpump,2
+26bmS77Reje7eQVXHHA88hqGCq7p6CZgLnGsarQzWa9m,solana,Pump.fun,random_new,2026-11-26T00:33:55.779050+00:00,2026-11-26T00:32:55Z,new_pools_sampled_p=0.25,0.25,2026-11-28T00:33:55.779050+00:00,kZagjG9tH8amu3L72GWYx8S449aDHK3GDmkayaBpump,2
+EPHTu1vzWq5zLZjM3sgY3jdRGaKajEgaZrJ9MemXZFqq,solana,Pump.fun,random_new,2026-11-26T00:33:55.779050+00:00,2026-11-26T00:32:25Z,new_pools_sampled_p=0.25,0.25,2026-11-28T00:33:55.779050+00:00,BDJkQxzX8sASUJLeH4WfkVFYxtmWdZYiva6MVVn4pump,2
